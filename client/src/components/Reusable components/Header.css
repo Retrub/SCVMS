@@ -1,0 +1,35 @@
+.header {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border: solid 3px #ff6600;
+  border-radius: 10px;
+}
+
+.header__title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.header__admin-info {
+  font-size: 18px;
+  margin-right: 20px;
+}
+
+.header__logout-button {
+  background-color: #ff6600;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.header__logout-button:hover {
+  background-color: #ff660096; /* Darker red on hover */
+}

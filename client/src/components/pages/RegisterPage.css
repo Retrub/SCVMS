@@ -1,0 +1,65 @@
+.register-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("D:\VS Code Projects\REACT\SCVMS\client\public\LoginPage-background.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.register-page__form {
+  width: 420px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  border-radius: 10px;
+  padding: 30px 40px;
+}
+
+.register-page__title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.register-page input {
+  background: transparent;
+  border: none;
+  outline: none;
+  border: 2px solid rgb(248, 242, 242);
+  border-radius: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 15px 0 15px 10px;
+}
+
+.register-page label {
+  font-size: 1rem;
+}
+
+.register-page__button {
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.register-page__subtext {
+  font-size: 1rem;
+  display: block;
+  margin: 0.5rem;
+  text-align: center;
+}
+
+.register-page__loginLink {
+  color: #fff;
+  font-weight: 600;
+  border-radius: 15px;
+  margin-left: 0.3rem;
+}

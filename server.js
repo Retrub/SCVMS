@@ -1,15 +1,15 @@
 require("dotenv").config({ path: "./config.env" });
 const express = require("express");
 const app = express();
-const connectDB = require("./config/db");
-const errorHandler = require("./middleware/error");
+const connectDB = require("./client/src/server/config/db");
+const errorHandler = require("./client/src/server/middleware/error");
 
 //Connecting to DB
 connectDB();
 
 app.use(express.json());
 
-app.use("/api/auth", require("./routes/auth"));
+app.use("/api/auth", require("./client/src/server/routes/auth"));
 
 //Error Handler
 app.use(errorHandler);

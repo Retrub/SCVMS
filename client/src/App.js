@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import PrivateRoute from "./components/routing/PrivateRoute";
+import PrivateRoute from "./routing/PrivateRoute";
 //Pages
 import PrivatePage from "./components/pages/PrivatePage";
 import LoginPage from "./components/pages/LoginPage";

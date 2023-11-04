@@ -10,6 +10,7 @@ import ResetPasswordPage from "./components/pages/ResetPasswordPage";
 import NewClientPage from "./components/pages/NewClientPage";
 import UserPage from "./components/pages/UserPage";
 import ClientsPage from "./components/pages/ClientsPage";
+import UpdateClientPage from "./components/pages/UpdateClientPage";
 
 import "./App.css";
 
@@ -26,6 +27,7 @@ const App = () => {
           <Route exact path="/resetpassword/:resetToken" component={ResetPasswordPage}/>
           <PrivateRoute exact path="/new"  component={NewClientPage} />
           <PrivateRoute exact path="/clients"  component={ClientsPage} />
+          <PrivateRoute path="/clients-update/:clientId" component={UpdateClientPage} />
         </Switch>
       </div>
     </Router>

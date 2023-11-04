@@ -7,9 +7,11 @@ const {
   forgotpassword,
   resetpassword,
   addClient,
-  roles,
   protect,
+  readClients,
   readClient,
+  deleteClient,
+  updateClient,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -24,6 +26,12 @@ router.route("/resetpassword/:resetToken").put(resetpassword);
 
 router.route("/new").post(addClient);
 
-router.route("/clients").get(readClient);
+router.route("/clients").get(readClients);
+
+router.route("/clients-update/:id").get(readClient);
+
+router.route("/clients/:id").delete(deleteClient);
+
+router.route("/clients/:id").put(updateClient);
 
 module.exports = router;

@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import "./PrivatePage.css";
 
 //Components
@@ -8,35 +7,36 @@ import Footer from "../Reusable components/Footer";
 import Header from "../Reusable components/Header";
 
 const PrivatePage = ({ history }) => {
-  const [error, setError] = useState("");
-  const [privateData, setPrivateData] = useState("");
+  // const [error, setError] = useState("");
+  let error = "";
+  // const [privateData, setPrivateData] = useState("");
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
       history.push("/login");
     }
 
-    const fetchPrivateData = async () => {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      };
+    // const fetchPrivateData = async () => {
+    //   const config = {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+    //     },
+    //   };
 
-      try {
-        const { data } = await axios.get("/api/auth/main", config);
-        setPrivateData(data.data);
-      } catch (error) {
-        localStorage.removeItem("authToken");
-        setError("Jūs esate neprisijungę, prašome prisjungti.");
-        setTimeout(() => {
-          history.push("/login");
-        }, 4000);
-      }
-    };
+    //   try {
+    //     const { data } = await axios.get("/api/auth/main", config);
+    //     setPrivateData(data.data);
+    //   } catch (error) {
+    //     localStorage.removeItem("authToken");
+    //     setError("Jūs esate neprisijungę, prašome prisjungti.");
+    //     setTimeout(() => {
+    //       history.push("/login");
+    //     }, 4000);
+    //   }
+    // };
 
-    fetchPrivateData();
+    // fetchPrivateData();
   }, [history]);
 
   return error ? (
@@ -44,7 +44,6 @@ const PrivatePage = ({ history }) => {
   ) : (
     <>
       <div className="all-pages-settings">
-        <div>{privateData}</div>
         <Header />
         <div className="container">
           <Sidebar />

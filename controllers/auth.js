@@ -123,7 +123,7 @@ exports.resetpassword = async (req, res, next) => {
     next(error);
   }
 };
-
+// Send Token
 const sendTokenAndRole = (user, statusCode, res) => {
   const token = user.getSignedToken();
 
@@ -191,11 +191,60 @@ exports.addClient = async (req, res, next) => {
   }
 };
 
-exports.readClient = async (req, res) => {
+exports.readClients = async (req, res) => {
   try {
     const clients = await Client.find();
+
     res.json(clients);
   } catch (error) {
     res.status(500).json({ error: "Unable to fetch users" });
+  }
+};
+
+exports.readClient = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const client = await Client.findById(id);
+
+    res.json(client);
+  } catch (error) {
+    res.status(500).json({ error: "Unable to fetch users" });
+  }
+};
+
+exports.deleteClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Client.findByIdAndDelete(id);
+    res.status(200).json({ message: "Client deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting client:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the client" });
+  }
+};
+
+exports.updateClient = async (req, res) => {
+  try {
+    const { id } = req.params; // Get the client ID from the route parameters
+    const updateData = req.body; // This should be the updated data for the client
+
+    console.log(updateData);
+    const client = await Client.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    if (!client) {
+      res.status(404).json({ message: "Client not found" });
+    }
+
+    res.status(200).json(client); // You can respond with the updated client data
+  } catch (error) {
+    console.error("Error updating client:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the client" });
   }
 };

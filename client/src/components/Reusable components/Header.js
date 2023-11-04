@@ -15,12 +15,17 @@ const Header = () => {
         },
       };
 
-      const response = await axios.get("/api/auth/main", config);
-      setClientName(response.data);
+      try {
+        const response = await axios.get("/api/auth/main", config);
+        setClientName(response.data);
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error("Error fetching private data:", error);
+      }
     };
 
     fetchPrivateData();
-  });
+  }, []); // Specify an empty dependency array
 
   const logoutHandler = () => {
     localStorage.removeItem("authToken");

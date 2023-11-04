@@ -23,11 +23,10 @@ const AddClientForm = ({ history }) => {
     };
 
     try {
-      const { data } = await axios.post(
-        "/api/auth/new",
-        { name, surname, email, city, birth, join_date, sport_plan },
-        config
-      );
+      const { data } = await axios.post
+      ("/api/auth/new", 
+      { name, surname, email, city, birth, join_date, sport_plan},
+       config);
       setSuccess(data.data);
       setTimeout(() => {
         setSuccess("");

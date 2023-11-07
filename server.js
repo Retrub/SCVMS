@@ -12,7 +12,7 @@ app.use(express.json());
 app.use("/api/auth", require("./client/src/server/routes/auth"));
 
 //Error Handler
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

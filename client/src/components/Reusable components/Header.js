@@ -1,12 +1,19 @@
 import React from "react";
-import "./Header.css";
 import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
+import "./Header.css";
+
+const encryption = require("../../server/config/encryption");
 
 const Header = () => {
+  const history = useHistory();
   const [clientName, setClientName] = useState("");
 
   useEffect(() => {
+    if (!localStorage.getItem("authToken")) {
+      history.push("/login");
+    }
     const fetchPrivateData = async () => {
       const config = {
         headers: {
@@ -17,15 +24,19 @@ const Header = () => {
 
       try {
         const response = await axios.get("/api/auth/main", config);
-        setClientName(response.data);
+        const encryptedData = response.data.userObject;
+        const secretKey = response.data.EncryptedSecretKey;
+        const decryptedData = encryption.decrypt(encryptedData, secretKey);
+        setClientName(decryptedData);
       } catch (error) {
-        // Handle any errors that occur during the request
-        console.error("Error fetching private data:", error);
+        localStorage.removeItem("authToken");
+        console.error("Klaida nuskaitant vardą:", error);
+        history.push("/login");
       }
     };
 
     fetchPrivateData();
-  }, []); // Specify an empty dependency array
+  }, [history]);
 
   const logoutHandler = () => {
     localStorage.removeItem("authToken");

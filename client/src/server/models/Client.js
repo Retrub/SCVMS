@@ -20,19 +20,19 @@ const clientSchema = new mongoose.Schema({
   },
   city: {
     type: String,
-    required: [true, "Please provide a  city"],
   },
   birth: {
     type: String,
-    required: [true, "Please provide a  birth"],
   },
   join_date: {
-    type: String,
+    type: Date,
+  },
+  duration: {
+    type: Number,
     required: [true, "Please provide a username"],
   },
-  sport_plan: {
-    type: String,
-    required: [true, "Please provide a username"],
+  valid_until: {
+    type: Date,
   },
 });
 

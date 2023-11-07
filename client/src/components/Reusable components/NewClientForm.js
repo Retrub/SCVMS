@@ -2,14 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import "./NewClientForm.css";
 
-const AddClientForm = ({ history }) => {
+const AddClientForm = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [birth, setBirth] = useState("");
   const [city, setCity] = useState("");
-  const [join_date, setJoinDate] = useState("");
-  const [sport_plan, setSportPlan] = useState("");
+  const [duration, setDuration] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -25,17 +24,17 @@ const AddClientForm = ({ history }) => {
     try {
       const { data } = await axios.post
       ("/api/auth/new", 
-      { name, surname, email, city, birth, join_date, sport_plan},
+      { name, surname, email, city, birth, duration },
        config);
       setSuccess(data.data);
       setTimeout(() => {
         setSuccess("");
-      }, 5000);
+      }, 1000);
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
         setError("");
-      }, 5000);
+      }, 1000);
     }
   };
 
@@ -96,29 +95,19 @@ const AddClientForm = ({ history }) => {
         </div>
 
         <div className="new-client-form__group">
-          <label htmlFor="joinDate">Įstojimo data: </label>
-          <input
-            type="date"
-            placeholder=""
-            value={join_date}
-            onChange={(e) => setJoinDate(e.target.value)}
-          />
-        </div>
-
-        <div className="new-client-form__group">
-          <label htmlFor="sportPlan">Trukmė: </label>
+          <label htmlFor="duration">Trukmė: </label>
           <select
-            value={sport_plan}
-            onChange={(e) => setSportPlan(e.target.value)}
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
           >
             <option value="">Pasirinkite trukmę</option>
-            <option value="1 mėnesis">1 mėnesis</option>
-            <option value="2 mėnesis">2 mėnesis</option>
-            <option value="3 mėnesis">3 mėnesis</option>
-            <option value="4 mėnesis">4 mėnesis</option>
-            <option value="5 mėnesis">5 mėnesis</option>
-            <option value="6 mėnesis">6 mėnesis</option>
-            <option value="12 mėnesių">12 mėnesių</option>
+            <option value="1">1 mėnesis</option>
+            <option value="2">2 mėnesiai</option>
+            <option value="3">3 mėnesiai</option>
+            <option value="4">4 mėnesiai</option>
+            <option value="5">5 mėnesiai</option>
+            <option value="6">6 mėnesiai</option>
+            <option value="12">12 mėnesių</option>
           </select>
         </div>
 

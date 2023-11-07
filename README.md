@@ -26,6 +26,9 @@ EMAIL_PASSWORD=""
 
 EMAIL_FROM=""
 
+ # Encryption secret key:
+ SECRET_KEY_ENCRYPTION = ""
+ 
  ### Quick Start :
 Install dependencies for server & client
 npm install && npm run client-install

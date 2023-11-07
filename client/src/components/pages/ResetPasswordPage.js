@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 import "./ResetPasswordPage.css";
@@ -37,8 +37,7 @@ const ResetPasswordPage = ({ match }) => {
         config
       );
 
-      console.log(data);
-      setSuccess(data.data);
+      setSuccess(data.message);
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
@@ -57,10 +56,7 @@ const ResetPasswordPage = ({ match }) => {
         {error && <span className="error-message">{error} </span>}
         {success && (
           <span className="success-message">
-            {success}{" "}
-            <Link className="resetpassword-page__loginLink" to="/login">
-              Login
-            </Link>
+            {success} <Redirect to="/login" />
           </span>
         )}
         <div className="form-group">

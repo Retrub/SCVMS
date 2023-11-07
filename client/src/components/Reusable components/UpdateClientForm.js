@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
+import "./UpdateClientForm.css";
 
-function UpdateClientPage() {
-const history = useHistory();
+const encryption = require("../../server/config/encryption");
+
+const UpdateClientPage = () => {
+  const history = useHistory();
   const { clientId } = useParams();
   const [clientData, setClientData] = useState({});
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const fetchPrivateData = async () => {
+    try {
+      const response = await axios.get(`/api/auth/clients-update/${clientId}`);
+      const encryptedData = response.data.clientObject;
+      const secretKey = response.data.EncryptedSecretKey;
+      const decryptedData = encryption.decrypt(encryptedData, secretKey);
+      setClientData(decryptedData);
+    } catch (error) {
+      localStorage.removeItem("authToken");
+    }
+  };
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
@@ -15,20 +31,8 @@ const history = useHistory();
     } else {
       fetchPrivateData();
     }
-  },[history]);
+  }, [history]);
 
-  const fetchPrivateData = async () => {
-    try {
-      const response = await axios.get(`/api/auth/clients-update/${clientId}`);
-      setClientData(response.data);
-    } catch (error) {
-      localStorage.removeItem("authToken");
-    }
-  };
-  
-
-
-  // Define a function to handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -37,31 +41,32 @@ const history = useHistory();
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-
-    // Define a function to handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        // Submit the updated data using formData to the API endpoint for updating
-        axios.put(`/api/auth/clients/${clientId}`, formData)
-          .then((response) => {
-            // Handle success, e.g., redirect to the client list page
-            // history.push("/client-list");
-          })
-          .catch((error) => {
-            console.error("Error updating client data:", error);
-          });
-      };
+    try {
+      await axios.put(`/api/auth/clients/${clientId}`, formData);
+      setSuccess("Kliento informacija sėkmingai pakeista");
+      setTimeout(() => {
+        setSuccess("");
+        history.push("/clients");
+      }, 3000);
+    } catch (error) {
+      setError("Įvyko klaida atnaujinant kliento duomenis: " + error.message);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+    }
+  };
 
   return (
-    <div>
-      <h1>Redaguoti klientą</h1>
+    <div className="update-client-form">
+      {error && <span className="error-message">{error}</span>}
+      {success && <span className="success-message">{success}</span>}
+      <div className="update-client-form__title">Redaguoti klientą</div>
       <form onSubmit={handleSubmit}>
-        {/* Input fields for updating client data */}
-
-        <div className="">
-          <label htmlFor="name">Name</label>
+        <div className="update-client-form__group">
+          <label htmlFor="name">Vardas</label>
           <input
             type="text"
             id="name"
@@ -71,11 +76,56 @@ const history = useHistory();
           />
         </div>
 
-        {/* Add more input fields for other client data */}
-        <button type="submit">Update</button>
+        <div className="update-client-form__group">
+          <label htmlFor="surname">Pavardė</label>
+          <input
+            type="text"
+            id="surname"
+            name="surname"
+            value={formData.surname || clientData.surname || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="update-client-form__group">
+          <label htmlFor="email">El. paštas</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={formData.email || clientData.email || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="update-client-form__group">
+          <label htmlFor="city">Miestas</label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            value={formData.city || clientData.city || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="update-client-form__group">
+          <label htmlFor="birth">Gimimo data:</label>
+          <input
+            type="date"
+            id="birth"
+            name="birth"
+            value={formData.birth || clientData.birth || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <button className="update-client-form__button" type="submit">
+          Išsaugoti
+        </button>
       </form>
     </div>
   );
-}
+};
 
 export default UpdateClientPage;

@@ -1,0 +1,50 @@
+.update-client-form {
+  background-color: #333;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+}
+
+.update-client-form__title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff6600;
+}
+
+.update-client-form__group {
+  margin: 15px 0;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.update-client-form input[type="text"],
+.update-client-form input[type="email"],
+.update-client-form input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+  background-color: #222;
+}
+
+.update-client-form__button {
+  background-color: #ff6600;
+  color: #f5f5f5;
+  border: none;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+
+.update-client-form__button:hover {
+  background-color: #e65900;
+}

@@ -1,9 +1,11 @@
 const crypto = require("crypto");
 const User = require("../models/User");
 const Client = require("../models/Client");
-const ErrorResponse = require("../utilities/errorResponse");
 const sendEmail = require("../utilities/sendEmail");
 const jwt = require("jsonwebtoken");
+
+const encryption = require("../config/encryption");
+const ErrorResponse = require("../utilities/errorResponse");
 
 //User Controller
 exports.register = async (req, res, next) => {
@@ -16,36 +18,38 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    sendTokenAndRole(user, 200, res);
+    sendToken(user, 200, res);
   } catch (err) {
     next(err);
   }
 };
 
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(
-      new ErrorResponse("Prašome pateikti el. pašto adresą ir slaptažodį", 400)
-    );
+    const message = "Prašome pateikti el. pašto adresą ir slaptažodį";
+    ErrorResponse.send(res, 400, message);
   }
 
   try {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorResponse("Duomenys neteisingi", 401));
+      const message = "Vartotojas nerastas";
+      ErrorResponse.send(res, 401, message);
     }
 
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return next(new ErrorResponse("Duomenys neteisingi", 401));
+      const message = "Duomenys neteisingi";
+      ErrorResponse.send(res, 401, message);
     }
-    sendTokenAndRole(user, 200, res);
+    sendToken(user, 200, res);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    const message = "Įvyko klaida prisijungiant";
+    ErrorResponse.send(res, 500, message);
   }
 };
 
@@ -56,7 +60,8 @@ exports.forgotpassword = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return next(new ErrorResponse("El. pašto išsiųsti nepavyko", 404));
+      const message = "El. pašto išsiųsti nepavyko";
+      ErrorResponse.send(res, 404, message);
     }
 
     const resetToken = user.getResetPasswordToken();
@@ -77,21 +82,22 @@ exports.forgotpassword = async (req, res, next) => {
         subject: "Slaptažodžio nustatymo iš naujo užklausa",
         text: message,
       });
-      res.status(200).json({ success: true, data: " El. laiškas išsiųstas" });
+      res.status(200).json({ data: " El. laiškas išsiųstas" });
     } catch (error) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
 
       await user.save();
 
-      return next(new ErrorResponse("El. pašto išsiųsti nepavyko", 500));
+      const message = "El. pašto išsiųsti nepavyko";
+      ErrorResponse.send(res, 500, message);
     }
   } catch (error) {
     next(error);
   }
 };
 
-exports.resetpassword = async (req, res, next) => {
+exports.resetpassword = async (req, res) => {
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.resetToken)
@@ -104,32 +110,32 @@ exports.resetpassword = async (req, res, next) => {
     });
 
     if (!user) {
-      return next(
-        new ErrorResponse("Neteisingas atkūrimo prieigos raktas", 400)
-      );
+      const message = "Neteisingas atkūrimo prieigos raktas";
+      ErrorResponse.send(res, 400, message);
     }
-
+    else {
+      
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
 
     await user.save();
 
-    res.status(201).json({
-      success: true,
-      data: " Slaptažodis atstatytas sėkmingai",
-    });
+    res.status(200).json({ message: "Slaptažodis atstatytas sėkmingai" });
+    }
   } catch (error) {
-    next(error);
+    const message = "Slaptažodžio atstatyti nepavyko";
+    ErrorResponse.send(res, 400, message);
   }
 };
-// Send Token
-const sendTokenAndRole = (user, statusCode, res) => {
-  const token = user.getSignedToken();
 
+// Send Token
+const sendToken = (user, statusCode, res) => {
+  const token = user.getSignedToken();
   res.status(statusCode).json({ success: true, token });
 };
 
+//Main function
 exports.protect = async (req, res, next) => {
   let token;
 
@@ -142,34 +148,48 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    const message = "Nustatyti tapatybės nepavyko. Prisijungite";
+    ErrorResponse.send(res, 401, message);
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(decoded);
 
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return next(new ErrorResponse("No user found with this id", 404));
+      const message = "Pagal pateikta ID vartotojas nerastas";
+      ErrorResponse.send(res, 404, message);
     }
 
-    res.status(200).json({
-      success: true,
-      username: user.username,
-    });
+    const userObject = encryption.encrypt(user);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+
+    res.status(200).json({ userObject, EncryptedSecretKey });
 
     req.user = user;
     next();
   } catch (error) {
-    return next(new ErrorResponse("Not authorized to access this routes", 401));
+    if (error.message.includes("expiredAt:")) {
+      const message = "Jūsų autorizacijos žetono laikas pasibaigė";
+      ErrorResponse.send(res, 401, message);
+    } else {
+      const message = "Prisijungimo klaida";
+      ErrorResponse.send(res, 500, message);
+    }
   }
 };
 
 //Clients Controller
-exports.addClient = async (req, res, next) => {
-  const { name, surname, email, city, birth, join_date, sport_plan } = req.body;
+exports.addClient = async (req, res) => {
+  const { name, surname, email, city, birth, duration } = req.body;
+
+const currentDate = new Date();
+const validityMonths = parseInt(duration);
+
+
+const validUntil = new Date();
+validUntil.setMonth(currentDate.getMonth() + validityMonths);
 
   try {
     const client = await Client.create({
@@ -178,16 +198,22 @@ exports.addClient = async (req, res, next) => {
       email,
       city,
       birth,
-      join_date,
-      sport_plan,
+      join_date: currentDate,
+      duration,
+      valid_until: validUntil,
     });
     await client.save();
 
-    res
-      .status(200)
-      .json({ success: true, data: " Klientas sėkmingai sukurtas" });
+    res.status(200).json({ data: " Klientas sėkmingai sukurtas" });
   } catch (error) {
-    next(error);
+    if (error.code === 11000) {
+      const message = "El. pašto adresas jau toks egzistuoja.";
+      ErrorResponse.send(res, 400, message);
+    }
+    else {
+    const message = "Kliento sukurti nepavyko";
+    ErrorResponse.send(res, 400, message);
+    }
   }
 };
 
@@ -195,9 +221,29 @@ exports.readClients = async (req, res) => {
   try {
     const clients = await Client.find();
 
-    res.json(clients);
+
+    // Suformuojami datos laukai
+    const formattedClients = clients.map(client => {
+      const formattedClient = client.toObject();
+      
+      if (client.join_date instanceof Date) {
+        formattedClient.join_date = client.join_date.toISOString().split('T')[0];
+      }
+      
+      if (client.valid_until instanceof Date) {
+        formattedClient.valid_until = client.valid_until.toISOString().split('T')[0];
+      }
+      
+      return formattedClient;
+    });
+
+    const clientObject = encryption.encrypt(formattedClients);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+
+    res.json({ clientObject, EncryptedSecretKey });
   } catch (error) {
-    res.status(500).json({ error: "Unable to fetch users" });
+    const message = "Nepavyko gauti klientų informacijos";
+    ErrorResponse.send(res, 400, message);
   }
 };
 
@@ -206,9 +252,13 @@ exports.readClient = async (req, res) => {
   try {
     const client = await Client.findById(id);
 
-    res.json(client);
+    const clientObject = encryption.encrypt(client);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+
+    res.json({ clientObject, EncryptedSecretKey });
   } catch (error) {
-    res.status(500).json({ error: "Unable to fetch users" });
+    const message = "Nepavyko gauti kliento informacijos";
+    ErrorResponse.send(res, 400, message);
   }
 };
 
@@ -217,34 +267,37 @@ exports.deleteClient = async (req, res) => {
     const { id } = req.params;
 
     await Client.findByIdAndDelete(id);
-    res.status(200).json({ message: "Client deleted successfully" });
+    res.status(200).json({ message: "Klientas sėkmingai ištrintas" });
   } catch (error) {
-    console.error("Error deleting client:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while deleting the client" });
+    const message = "Ištrinant klientą įvyko klaida.";
+    ErrorResponse.send(res, 400, message);
   }
 };
 
 exports.updateClient = async (req, res) => {
   try {
-    const { id } = req.params; // Get the client ID from the route parameters
-    const updateData = req.body; // This should be the updated data for the client
+    const { id } = req.params;
+    const updateData = req.body;
 
-    console.log(updateData);
     const client = await Client.findByIdAndUpdate(id, updateData, {
       new: true,
     });
 
     if (!client) {
-      res.status(404).json({ message: "Client not found" });
+      const message = "Klientas nerastas";
+      ErrorResponse.send(res, 404, message);
     }
+    const clientUpdateObject = encryption.encrypt(client);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
 
-    res.status(200).json(client); // You can respond with the updated client data
+    res.status(200).json({ clientUpdateObject, EncryptedSecretKey });
   } catch (error) {
-    console.error("Error updating client:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while updating the client" });
+    if (error.code === 11000) {
+      const message = "El. pašto adresas jau toks egzistuoja.";
+      ErrorResponse.send(res, 400, message);
+    } else {
+      const message = "Atnaujinant klientą įvyko klaida";
+      ErrorResponse.send(res, 400, message);
+    }
   }
 };

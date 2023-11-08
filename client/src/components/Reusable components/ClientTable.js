@@ -11,6 +11,8 @@ const ClientTable = () => {
   const [clientsData, setClientsData] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [searchWord, setsearchWord] = useState("");
+  const [filteredClients, setFilteredClients] = useState([]);
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
@@ -19,6 +21,21 @@ const ClientTable = () => {
       fetchPrivateData();
     }
   }, [history]);
+
+  useEffect(() => {
+    const filterClients = () => {
+      const filtered = clientsData.filter((client) => {
+        return (
+          client.name.toLowerCase().includes(searchWord.toLowerCase()) ||
+          client.email.toLowerCase().includes(searchWord.toLowerCase()) ||
+          client.surname.toLowerCase().includes(searchWord.toLowerCase())
+        );
+      });
+
+      setFilteredClients(filtered);
+    };
+    filterClients();
+  }, [clientsData, searchWord]);
 
   const fetchPrivateData = async () => {
     try {
@@ -68,12 +85,22 @@ const ClientTable = () => {
     } else if (remainingDays > 5) {
       statusClass = "client-table__confirmed-status";
     }
-
     return { status, statusClass };
   };
+
   return (
     <div className="client-table">
       <div className="client-table__title">Klientų sąrašas</div>
+
+      <div className="client-table__search">
+        <input
+          type="text"
+          placeholder="Ieškoti klientų pagal vardą || pavardę || el. paštą"
+          value={searchWord}
+          onChange={(e) => setsearchWord(e.target.value)}
+        />
+      </div>
+
       {error && <span className="error-message">{error}</span>}
       {success && <span className="success-message">{success}</span>}
       <div className="client-table__container">
@@ -92,7 +119,7 @@ const ClientTable = () => {
             </tr>
           </thead>
           <tbody>
-            {clientsData.map((client) => {
+            {filteredClients.map((client) => {
               const { status, statusClass } = getStatusAndColor(client);
 
               return (
@@ -124,15 +151,18 @@ const ClientTable = () => {
           </tbody>
         </table>
       </div>
+
       <div className="client-table__legend">
         <div className="client-table__legend-item">
           <div className="client-table__color-box client-table__confirmed-status"></div>
           <div>Leidimas suteiktas</div>
         </div>
+
         <div className="client-table__legend-item">
           <div className="client-table__color-box client-table__denied-status"></div>
           <div>Pasibaigusi narystė ir priega uždrausta </div>
         </div>
+
         <div className="client-table__legend-item">
           <div className="client-table__color-box client-table__warning-status"></div>
           <div>Baigiasi narystė, bet leidimas suteiktas</div>

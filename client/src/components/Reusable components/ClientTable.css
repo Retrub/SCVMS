@@ -9,6 +9,15 @@
   font-weight: bolder;
 }
 
+.client-table__search {
+  padding: 10px;
+}
+
+.client-table__search input {
+  padding: 5px;
+  width: 300px;
+}
+
 .client-table__container {
   border-collapse: collapse;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

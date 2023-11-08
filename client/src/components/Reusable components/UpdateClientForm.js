@@ -12,26 +12,28 @@ const UpdateClientPage = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const fetchPrivateData = async () => {
-    try {
-      const response = await axios.get(`/api/auth/clients-update/${clientId}`);
-      const encryptedData = response.data.clientObject;
-      const secretKey = response.data.EncryptedSecretKey;
-      const decryptedData = encryption.decrypt(encryptedData, secretKey);
-      setClientData(decryptedData);
-    } catch (error) {
-      localStorage.removeItem("authToken");
-    }
-  };
+  const [monthsToAdd, setMonthsToAdd] = useState(1);
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
       history.push("/login");
     } else {
+      const fetchPrivateData = async () => {
+        try {
+          const response = await axios.get(
+            `/api/auth/client-update/${clientId}`
+          );
+          const encryptedData = response.data.clientObject;
+          const secretKey = response.data.EncryptedSecretKey;
+          const decryptedData = encryption.decrypt(encryptedData, secretKey);
+          setClientData(decryptedData);
+        } catch (error) {
+          localStorage.removeItem("authToken");
+        }
+      };
       fetchPrivateData();
     }
-  }, [history]);
+  }, [history, clientId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,6 +55,32 @@ const UpdateClientPage = () => {
       }, 3000);
     } catch (error) {
       setError("Įvyko klaida atnaujinant kliento duomenis: " + error.message);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+    }
+  };
+
+  const handleAddOneMonth = async () => {
+    const originalDate = new Date(clientData.valid_until);
+    const months = parseInt(monthsToAdd, 10);
+    originalDate.setUTCMonth(originalDate.getUTCMonth() + months);
+    const newValidUntil = originalDate.toISOString();
+
+    const updatedFormData = {
+      ...formData,
+      valid_until: newValidUntil,
+    };
+
+    try {
+      await axios.put(`/api/auth/clients/${clientId}`, updatedFormData);
+      setSuccess("Klientui sėkmingai pratestą narystė");
+      setTimeout(() => {
+        setSuccess("");
+        history.push("/clients");
+      }, 3000);
+    } catch (error) {
+      setError("Įvyko klaida atnaujinant kliento narystę: " + error.message);
       setTimeout(() => {
         setError("");
       }, 3000);
@@ -122,6 +150,30 @@ const UpdateClientPage = () => {
 
         <button className="update-client-form__button" type="submit">
           Išsaugoti
+        </button>
+
+        <div className="update-client-form__group">
+          <label htmlFor="months">Laikotarpis:</label>
+          <select
+            id="months"
+            name="months"
+            value={monthsToAdd}
+            onChange={(e) => setMonthsToAdd(e.target.value)}
+          >
+            <option value="1">1 mėnuo</option>
+            <option value="3">3 mėnesiai</option>
+            <option value="6">6 mėnesiai</option>
+            <option value="12">12 mėnesių</option>
+            <option value="-1">1 mėnesį atimti</option>
+          </select>
+        </div>
+
+        <button
+          className="update-client-form__button"
+          type="button"
+          onClick={handleAddOneMonth}
+        >
+          + Pridėti
         </button>
       </form>
     </div>

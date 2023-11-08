@@ -84,7 +84,7 @@ const ClientTable = () => {
                   >
                     Delete
                   </button>
-                  <Link to={`/clients-update/${client._id}`}>
+                  <Link to={`/client-update/${client._id}`}>
                     <button className="client-table__button-update">
                       Update
                     </button>

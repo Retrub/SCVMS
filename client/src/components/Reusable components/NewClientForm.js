@@ -22,10 +22,11 @@ const AddClientForm = () => {
     };
 
     try {
-      const { data } = await axios.post
-      ("/api/auth/new", 
-      { name, surname, email, city, birth, duration },
-       config);
+      const { data } = await axios.post(
+        "/api/auth/new",
+        { name, surname, email, city, birth, duration },
+        config
+      );
       setSuccess(data.data);
       setTimeout(() => {
         setSuccess("");
@@ -95,17 +96,14 @@ const AddClientForm = () => {
         </div>
 
         <div className="new-client-form__group">
-          <label htmlFor="duration">Trukmė: </label>
+          <label htmlFor="duration">Laikotarpis: </label>
           <select
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           >
             <option value="">Pasirinkite trukmę</option>
             <option value="1">1 mėnesis</option>
-            <option value="2">2 mėnesiai</option>
             <option value="3">3 mėnesiai</option>
-            <option value="4">4 mėnesiai</option>
-            <option value="5">5 mėnesiai</option>
             <option value="6">6 mėnesiai</option>
             <option value="12">12 mėnesių</option>
           </select>

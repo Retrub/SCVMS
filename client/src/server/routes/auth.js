@@ -28,7 +28,7 @@ router.route("/new").post(addClient);
 
 router.route("/clients").get(readClients);
 
-router.route("/clients-update/:id").get(readClient);
+router.route("/client-update/:id").get(readClient);
 
 router.route("/clients/:id").delete(deleteClient);
 

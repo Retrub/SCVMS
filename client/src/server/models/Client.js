@@ -34,6 +34,9 @@ const clientSchema = new mongoose.Schema({
   valid_until: {
     type: Date,
   },
+  status: {
+    type: String,
+  },
 });
 
 const Client = mongoose.model("Client", clientSchema);

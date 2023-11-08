@@ -112,16 +112,14 @@ exports.resetpassword = async (req, res) => {
     if (!user) {
       const message = "Neteisingas atkūrimo prieigos raktas";
       ErrorResponse.send(res, 400, message);
-    }
-    else {
-      
-    user.password = req.body.password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    } else {
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
 
-    await user.save();
+      await user.save();
 
-    res.status(200).json({ message: "Slaptažodis atstatytas sėkmingai" });
+      res.status(200).json({ message: "Slaptažodis atstatytas sėkmingai" });
     }
   } catch (error) {
     const message = "Slaptažodžio atstatyti nepavyko";
@@ -184,12 +182,11 @@ exports.protect = async (req, res, next) => {
 exports.addClient = async (req, res) => {
   const { name, surname, email, city, birth, duration } = req.body;
 
-const currentDate = new Date();
-const validityMonths = parseInt(duration);
+  const currentDate = new Date();
+  const validityMonths = parseInt(duration);
 
-
-const validUntil = new Date();
-validUntil.setMonth(currentDate.getMonth() + validityMonths);
+  const validUntil = new Date();
+  validUntil.setMonth(currentDate.getMonth() + validityMonths);
 
   try {
     const client = await Client.create({
@@ -201,6 +198,7 @@ validUntil.setMonth(currentDate.getMonth() + validityMonths);
       join_date: currentDate,
       duration,
       valid_until: validUntil,
+      status: "Patvirtintas",
     });
     await client.save();
 
@@ -209,10 +207,9 @@ validUntil.setMonth(currentDate.getMonth() + validityMonths);
     if (error.code === 11000) {
       const message = "El. pašto adresas jau toks egzistuoja.";
       ErrorResponse.send(res, 400, message);
-    }
-    else {
-    const message = "Kliento sukurti nepavyko";
-    ErrorResponse.send(res, 400, message);
+    } else {
+      const message = "Kliento sukurti nepavyko";
+      ErrorResponse.send(res, 400, message);
     }
   }
 };
@@ -221,19 +218,22 @@ exports.readClients = async (req, res) => {
   try {
     const clients = await Client.find();
 
-
     // Suformuojami datos laukai
-    const formattedClients = clients.map(client => {
+    const formattedClients = clients.map((client) => {
       const formattedClient = client.toObject();
-      
+
       if (client.join_date instanceof Date) {
-        formattedClient.join_date = client.join_date.toISOString().split('T')[0];
+        formattedClient.join_date = client.join_date
+          .toISOString()
+          .split("T")[0];
       }
-      
+
       if (client.valid_until instanceof Date) {
-        formattedClient.valid_until = client.valid_until.toISOString().split('T')[0];
+        formattedClient.valid_until = client.valid_until
+          .toISOString()
+          .split("T")[0];
       }
-      
+
       return formattedClient;
     });
 

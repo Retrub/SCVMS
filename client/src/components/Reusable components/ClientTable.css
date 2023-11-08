@@ -56,3 +56,38 @@ td {
 tr:hover {
   background-color: #e0e0e0;
 }
+
+.client-table__confirmed-status {
+  color: white;
+  background-color: green;
+}
+
+.client-table__denied-status {
+  color: white;
+  background-color: red;
+}
+
+.client-table__warning-status {
+  color: green;
+  background-color: yellow;
+}
+
+.client-table__legend {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.client-table__legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.client-table__color-box {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}

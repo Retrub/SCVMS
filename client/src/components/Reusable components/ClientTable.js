@@ -48,6 +48,29 @@ const ClientTable = () => {
       }, 3000);
     }
   };
+
+  const getStatusAndColor = (client) => {
+    const validUntilDate = new Date(client.valid_until);
+    const today = new Date();
+    const remainingDays = Math.floor(
+      (validUntilDate - today) / (1000 * 60 * 60 * 24)
+    );
+
+    let statusClass = "";
+    let status = client.status;
+
+    if (remainingDays < 0 || status === "Uždraustas") {
+      statusClass = "client-table__denied-status";
+      status = "Uždraustas";
+    } else if (remainingDays <= 5) {
+      statusClass = "client-table__warning-status";
+      status = "Patvirtintas";
+    } else if (remainingDays > 5) {
+      statusClass = "client-table__confirmed-status";
+    }
+
+    return { status, statusClass };
+  };
   return (
     <div className="client-table">
       <div className="client-table__title">Klientų sąrašas</div>
@@ -64,36 +87,56 @@ const ClientTable = () => {
               <th>Gimimo data</th>
               <th>Prisijungimo data</th>
               <th>Galioja iki</th>
+              <th>Statusas</th>
               <th>Veiksmai</th>
             </tr>
           </thead>
           <tbody>
-            {clientsData.map((client) => (
-              <tr key={client._id}>
-                <td>{client.name}</td>
-                <td>{client.surname}</td>
-                <td>{client.email}</td>
-                <td>{client.city}</td>
-                <td>{client.birth}</td>
-                <td>{client.join_date}</td>
-                <td>{client.valid_until}</td>
-                <td>
-                  <button
-                    className="client-table__button-delete"
-                    onClick={() => handleDelete(client._id)}
-                  >
-                    Delete
-                  </button>
-                  <Link to={`/client-update/${client._id}`}>
-                    <button className="client-table__button-update">
-                      Update
+            {clientsData.map((client) => {
+              const { status, statusClass } = getStatusAndColor(client);
+
+              return (
+                <tr key={client._id}>
+                  <td>{client.name}</td>
+                  <td>{client.surname}</td>
+                  <td>{client.email}</td>
+                  <td>{client.city}</td>
+                  <td>{client.birth}</td>
+                  <td>{client.join_date}</td>
+                  <td>{client.valid_until}</td>
+                  <td className={statusClass}>{status}</td>
+                  <td>
+                    <button
+                      className="client-table__button-delete"
+                      onClick={() => handleDelete(client._id)}
+                    >
+                      Delete
                     </button>
-                  </Link>
-                </td>
-              </tr>
-            ))}
+                    <Link to={`/client-update/${client._id}`}>
+                      <button className="client-table__button-update">
+                        Update
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+      </div>
+      <div className="client-table__legend">
+        <div className="client-table__legend-item">
+          <div className="client-table__color-box client-table__confirmed-status"></div>
+          <div>Leidimas suteiktas</div>
+        </div>
+        <div className="client-table__legend-item">
+          <div className="client-table__color-box client-table__denied-status"></div>
+          <div>Pasibaigusi narystė ir priega uždrausta </div>
+        </div>
+        <div className="client-table__legend-item">
+          <div className="client-table__color-box client-table__warning-status"></div>
+          <div>Baigiasi narystė, bet leidimas suteiktas</div>
+        </div>
       </div>
     </div>
   );

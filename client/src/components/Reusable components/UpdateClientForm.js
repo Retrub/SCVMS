@@ -148,6 +148,20 @@ const UpdateClientPage = () => {
           />
         </div>
 
+        <div className="update-client-form__group">
+          <label htmlFor="status">Statusas:</label>
+          <select
+            id="status"
+            name="status"
+            value={formData.status || clientData.status || ""}
+            onChange={handleInputChange}
+          >
+            <option value="">Pakeisti statusą</option>
+            <option value="Patvirtintas">Patvirtintas</option>
+            <option value="Uždraustas">Uždraustas</option>
+          </select>
+        </div>
+
         <button className="update-client-form__button" type="submit">
           Išsaugoti
         </button>

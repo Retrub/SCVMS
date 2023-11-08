@@ -31,10 +31,15 @@ const PrivatePage = ({ history }) => {
             localStorage.removeItem("authToken");
             history.push("/login");
             setError("Jūsų prisijungimo sesija baigėsi. Prašome prisijungti.");
-            setTimeout(() => {}, 4000);
+            setTimeout(() => {
+              setError("");
+            }, 5000);
           } else {
             localStorage.removeItem("authToken");
             setError("Įvyko klaida. Prašome bandyti dar kartą vėliau.");
+            setTimeout(() => {
+              setError("");
+            }, 5000);
             history.push("/login");
           }
         }

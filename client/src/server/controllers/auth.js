@@ -31,26 +31,24 @@ exports.login = async (req, res) => {
   if (!email || !password) {
     const message = "Prašome pateikti el. pašto adresą ir slaptažodį";
     ErrorResponse.send(res, 400, message);
-  }
+  } else {
+    try {
+      const user = await User.findOne({ email }).select("+password");
 
-  try {
-    const user = await User.findOne({ email }).select("+password");
+      if (!user) {
+        const message = "Vartotojas nerastas";
+        ErrorResponse.send(res, 401, message);
+      }
 
-    if (!user) {
-      const message = "Vartotojas nerastas";
-      ErrorResponse.send(res, 401, message);
+      const isMatch = await user.matchPassword(password);
+
+      if (!isMatch) {
+        const message = "Duomenys neteisingi";
+        ErrorResponse.send(res, 401, message);
+      }
+      sendToken(user, 200, res);
+    } catch (error) {
     }
-
-    const isMatch = await user.matchPassword(password);
-
-    if (!isMatch) {
-      const message = "Duomenys neteisingi";
-      ErrorResponse.send(res, 401, message);
-    }
-    sendToken(user, 200, res);
-  } catch (error) {
-    const message = "Įvyko klaida prisijungiant";
-    ErrorResponse.send(res, 500, message);
   }
 };
 
@@ -90,8 +88,7 @@ exports.forgotpassword = async (req, res, next) => {
 
       await user.save();
 
-      const message = "El. pašto išsiųsti nepavyko";
-      ErrorResponse.send(res, 500, message);
+      ErrorResponse.send(res, 500, error.message);
     }
   } catch (error) {
     next(error);
@@ -123,8 +120,7 @@ exports.resetpassword = async (req, res) => {
       res.status(200).json({ message: "Slaptažodis atstatytas sėkmingai" });
     }
   } catch (error) {
-    const message = "Slaptažodžio atstatyti nepavyko";
-    ErrorResponse.send(res, 400, message);
+    ErrorResponse.send(res, 400, error.message);
   }
 };
 
@@ -173,8 +169,7 @@ exports.protect = async (req, res, next) => {
       const message = "Jūsų autorizacijos žetono laikas pasibaigė";
       ErrorResponse.send(res, 401, message);
     } else {
-      const message = "Prisijungimo klaida";
-      ErrorResponse.send(res, 500, message);
+      ErrorResponse.send(res, 500, error.message);
     }
   }
 };
@@ -209,8 +204,7 @@ exports.addClient = async (req, res) => {
       const message = "El. pašto adresas jau toks egzistuoja.";
       ErrorResponse.send(res, 400, message);
     } else {
-      const message = "Kliento sukurti nepavyko";
-      ErrorResponse.send(res, 400, message);
+      ErrorResponse.send(res, 400, error.message);
     }
   }
 };
@@ -243,8 +237,7 @@ exports.readClients = async (req, res) => {
 
     res.json({ clientObject, EncryptedSecretKey });
   } catch (error) {
-    const message = "Nepavyko gauti klientų informacijos";
-    ErrorResponse.send(res, 400, message);
+    ErrorResponse.send(res, 400, error.message);
   }
 };
 
@@ -258,8 +251,7 @@ exports.readClient = async (req, res) => {
 
     res.json({ clientObject, EncryptedSecretKey });
   } catch (error) {
-    const message = "Nepavyko gauti kliento informacijos";
-    ErrorResponse.send(res, 400, message);
+    ErrorResponse.send(res, 400, error.message);
   }
 };
 
@@ -270,8 +262,7 @@ exports.deleteClient = async (req, res) => {
     await Client.findByIdAndDelete(id);
     res.status(200).json({ message: "Klientas sėkmingai ištrintas" });
   } catch (error) {
-    const message = "Ištrinant klientą įvyko klaida.";
-    ErrorResponse.send(res, 400, message);
+    ErrorResponse.send(res, 400, error.message);
   }
 };
 
@@ -297,8 +288,7 @@ exports.updateClient = async (req, res) => {
       const message = "El. pašto adresas jau toks egzistuoja.";
       ErrorResponse.send(res, 400, message);
     } else {
-      const message = "Atnaujinant klientą įvyko klaida";
-      ErrorResponse.send(res, 400, message);
+      ErrorResponse.send(res, 400, error.message);
     }
   }
 };

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const User = require("../models/User");
 const Client = require("../models/Client");
+const ClientEntry = require("../models/ClientEntry");
 const sendEmail = require("../utilities/sendEmail");
 const jwt = require("jsonwebtoken");
 
@@ -299,5 +300,49 @@ exports.updateClient = async (req, res) => {
       const message = "Atnaujinant klientą įvyko klaida";
       ErrorResponse.send(res, 400, message);
     }
+  }
+};
+
+exports.entryClient = async (req, res) => {
+  const { id } = req.params;
+  const clientEntryCheck = await ClientEntry.findOne({
+    clientId: id,
+    exitTime: null,
+  });
+  if (clientEntryCheck) {
+    const message = "Klientas yra sporto salėje.";
+    ErrorResponse.send(res, 404, message);
+  } else {
+    try {
+      const entryTime = new Date();
+      const clientEntry = await ClientEntry.create({ clientId: id, entryTime });
+      await clientEntry.save();
+      res.status(200).json({ message: "Kliento įėjimas įrašytas" });
+    } catch (error) {
+      const message = "Klaida įvedant kliento pradinį laiką.";
+      ErrorResponse.send(res, 500, message);
+    }
+  }
+};
+
+exports.exitClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const exitTime = new Date();
+    const clientEntry = await ClientEntry.findOne({
+      clientId: id,
+      exitTime: null,
+    });
+
+    if (clientEntry) {
+      clientEntry.exitTime = exitTime;
+      await clientEntry.save();
+      res.status(200).json({ message: "Kliento išėjimas įrašytas" });
+    } else {
+      const message = "Aktyvaus kliento įrašo nerasta";
+      ErrorResponse.send(res, 404, message);
+    }
+  } catch (error) {
+    ErrorResponse.send(res, 500, error.message);
   }
 };

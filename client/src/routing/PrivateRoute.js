@@ -5,7 +5,7 @@ import UserPage from "../components/pages/UserPage";
 
 const encryption = require("../server/config/encryption");
 
-const PrivateRoute = ({ history, component: Component, role,  ...rest }) => {
+const PrivateRoute = ({ history, component: Component, role, ...rest }) => {
   const [userRole, setUserRole] = useState("");
   const isAuthenticated = localStorage.getItem("authToken");
 
@@ -26,13 +26,10 @@ const PrivateRoute = ({ history, component: Component, role,  ...rest }) => {
         const encryptedData = response.data.userObject;
         const secretKey = response.data.EncryptedSecretKey;
         const decryptedData = encryption.decrypt(encryptedData, secretKey);
-        
+
         setUserRole(decryptedData);
       } catch (error) {
         localStorage.removeItem("authToken");
-        setTimeout(() => {
-          history.push("/login");
-        }, 4000);
       }
     };
 
@@ -41,15 +38,8 @@ const PrivateRoute = ({ history, component: Component, role,  ...rest }) => {
 
   if (isAuthenticated) {
     if (userRole.role === "admin") {
-      return (
-        <Route
-          {...rest}
-          render={(props) => <Component {...props} />
-          }
-        />
-      );
-    }
-    else {
+      return <Route {...rest} render={(props) => <Component {...props} />} />;
+    } else {
       return <Route {...rest} component={UserPage} />;
     }
   }

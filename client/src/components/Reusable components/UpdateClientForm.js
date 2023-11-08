@@ -20,9 +20,7 @@ const UpdateClientPage = () => {
     } else {
       const fetchPrivateData = async () => {
         try {
-          const response = await axios.get(
-            `/api/auth/client-update/${clientId}`
-          );
+          const response = await axios.get(`/api/auth/read/${clientId}`);
           const encryptedData = response.data.clientObject;
           const secretKey = response.data.EncryptedSecretKey;
           const decryptedData = encryption.decrypt(encryptedData, secretKey);
@@ -47,7 +45,7 @@ const UpdateClientPage = () => {
     e.preventDefault();
 
     try {
-      await axios.put(`/api/auth/clients/${clientId}`, formData);
+      await axios.put(`/api/auth/client/update/${clientId}`, formData);
       setSuccess("Kliento informacija sėkmingai pakeista");
       setTimeout(() => {
         setSuccess("");
@@ -73,7 +71,7 @@ const UpdateClientPage = () => {
     };
 
     try {
-      await axios.put(`/api/auth/clients/${clientId}`, updatedFormData);
+      await axios.put(`/api/auth/client/update/${clientId}`, updatedFormData);
       setSuccess("Klientui sėkmingai pratestą narystė");
       setTimeout(() => {
         setSuccess("");

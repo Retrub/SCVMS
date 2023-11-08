@@ -12,6 +12,8 @@ const {
   readClient,
   deleteClient,
   updateClient,
+  entryClient,
+  exitClient,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -28,10 +30,14 @@ router.route("/new").post(addClient);
 
 router.route("/clients").get(readClients);
 
-router.route("/client-update/:id").get(readClient);
+router.route("/read/:id").get(readClient);
 
-router.route("/clients/:id").delete(deleteClient);
+router.route("/client/delete/:id").delete(deleteClient);
 
-router.route("/clients/:id").put(updateClient);
+router.route("/client/update/:id").put(updateClient);
+
+router.route("/clients/entry/:id").post(entryClient);
+
+router.route("/clients/exit/:id").post(exitClient);
 
 module.exports = router;

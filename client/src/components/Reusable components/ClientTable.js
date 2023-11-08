@@ -51,7 +51,7 @@ const ClientTable = () => {
 
   const handleDelete = async (clientId) => {
     try {
-      await axios.delete(`/api/auth/clients/${clientId}`);
+      await axios.delete(`/api/auth/client/delete/${clientId}`);
       fetchPrivateData();
       setSuccess("Klientas sėkmingai ištrintas");
       setTimeout(() => {
@@ -86,6 +86,36 @@ const ClientTable = () => {
       statusClass = "client-table__confirmed-status";
     }
     return { status, statusClass };
+  };
+
+  const recordEntry = async (clientId) => {
+    try {
+      const response = await axios.post(`/api/auth/clients/entry/${clientId}`);
+      setSuccess(response.data.message);
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+    } catch (error) {
+      setError(error.response.data.error);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+    }
+  };
+
+  const recordExit = async (clientId) => {
+    try {
+      const response = await axios.post(`/api/auth/clients/exit/${clientId}`);
+      setSuccess(response.data.message);
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+    } catch (error) {
+      setError(error.response.data.error);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+    }
   };
 
   return (
@@ -139,11 +169,26 @@ const ClientTable = () => {
                     >
                       Delete
                     </button>
-                    <Link to={`/client-update/${client._id}`}>
+
+                    <Link to={`/read/${client._id}`}>
                       <button className="client-table__button-update">
                         Update
                       </button>
                     </Link>
+
+                    <button
+                      className="client-table__button-entryAndExit"
+                      onClick={() => recordEntry(client._id)}
+                    >
+                      Atėjo
+                    </button>
+
+                    <button
+                      className="client-table__button-entryAndExit"
+                      onClick={() => recordExit(client._id)}
+                    >
+                      Išėjo
+                    </button>
                   </td>
                 </tr>
               );

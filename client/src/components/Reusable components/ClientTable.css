@@ -30,7 +30,12 @@
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
-  margin-right: 10px;
+  margin: 2px;
+}
+
+.client-table__button-delete:hover {
+  background-color: rgb(165, 10, 10);
+  cursor: pointer;
 }
 
 .client-table__button-update {
@@ -40,6 +45,28 @@
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
+  margin: 2px;
+}
+
+.client-table__button-update:hover {
+  background-color: rgb(19, 77, 19);
+  cursor: pointer;
+}
+
+.client-table__button-entryAndExit {
+  background-color: rgb(43, 43, 238);
+  color: #fff;
+  padding: 5px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  margin-right: 10px;
+  margin: 2px;
+}
+
+.client-table__button-entryAndExit:hover {
+  background-color: rgb(28, 28, 110);
+  cursor: pointer;
 }
 
 th {

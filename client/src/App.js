@@ -27,7 +27,7 @@ const App = () => {
           <Route exact path="/resetpassword/:resetToken" component={ResetPasswordPage}/>
           <PrivateRoute exact path="/new"  component={NewClientPage} />
           <PrivateRoute exact path="/clients"  component={ClientsPage} />
-          <PrivateRoute path="/client-update/:clientId" component={UpdateClientPage} />
+          <PrivateRoute path="/read/:clientId" component={UpdateClientPage} />
         </Switch>
       </div>
     </Router>

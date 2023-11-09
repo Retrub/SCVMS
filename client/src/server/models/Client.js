@@ -34,6 +34,9 @@ const clientSchema = new mongoose.Schema({
   valid_until: {
     type: Date,
   },
+  access: {
+    type: String,
+  },
   status: {
     type: String,
   },

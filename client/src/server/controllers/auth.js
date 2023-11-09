@@ -47,8 +47,7 @@ exports.login = async (req, res) => {
         ErrorResponse.send(res, 401, message);
       }
       sendToken(user, 200, res);
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 };
 
@@ -194,7 +193,8 @@ exports.addClient = async (req, res) => {
       join_date: currentDate,
       duration,
       valid_until: validUntil,
-      status: "Patvirtintas",
+      access: "Patvirtinta",
+      status: "Neaktyvus",
     });
     await client.save();
 
@@ -295,10 +295,12 @@ exports.updateClient = async (req, res) => {
 
 exports.entryClient = async (req, res) => {
   const { id } = req.params;
+
   const clientEntryCheck = await ClientEntry.findOne({
     clientId: id,
     exitTime: null,
   });
+
   if (clientEntryCheck) {
     const message = "Klientas yra sporto salėje.";
     ErrorResponse.send(res, 404, message);
@@ -307,6 +309,9 @@ exports.entryClient = async (req, res) => {
       const entryTime = new Date();
       const clientEntry = await ClientEntry.create({ clientId: id, entryTime });
       await clientEntry.save();
+
+      await Client.findByIdAndUpdate(id, { status: "Aktyvus" });
+
       res.status(200).json({ message: "Kliento įėjimas įrašytas" });
     } catch (error) {
       const message = "Klaida įvedant kliento pradinį laiką.";
@@ -327,6 +332,9 @@ exports.exitClient = async (req, res) => {
     if (clientEntry) {
       clientEntry.exitTime = exitTime;
       await clientEntry.save();
+
+      await Client.findByIdAndUpdate(id, { status: "Neaktyvus" });
+      
       res.status(200).json({ message: "Kliento išėjimas įrašytas" });
     } else {
       const message = "Aktyvaus kliento įrašo nerasta";

@@ -93,17 +93,17 @@ tr:hover {
   background-color: #e0e0e0;
 }
 
-.client-table__confirmed-status {
+.client-table__confirmed-access {
   color: white;
   background-color: green;
 }
 
-.client-table__denied-status {
+.client-table__denied-access {
   color: white;
   background-color: red;
 }
 
-.client-table__warning-status {
+.client-table__warning-access {
   color: green;
   background-color: yellow;
 }

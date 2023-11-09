@@ -8,14 +8,3 @@
     width: 100%;
   }
 }
-
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-  aside,
-  main {
-    width: 100%;
-  }
-}

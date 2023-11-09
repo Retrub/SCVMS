@@ -147,16 +147,16 @@ const UpdateClientPage = () => {
         </div>
 
         <div className="update-client-form__group">
-          <label htmlFor="status">Statusas:</label>
+          <label htmlFor="access">Prieiga:</label>
           <select
-            id="status"
-            name="status"
-            value={formData.status || clientData.status || ""}
+            id="access"
+            name="access"
+            value={formData.access || clientData.access || ""}
             onChange={handleInputChange}
           >
-            <option value="">Pakeisti statusą</option>
-            <option value="Patvirtintas">Patvirtintas</option>
-            <option value="Uždraustas">Uždraustas</option>
+            <option value="">Pakeisti prieigą</option>
+            <option value="Patvirtinta">Patvirtinta</option>
+            <option value="Uždrausta">Uždrausta</option>
           </select>
         </div>
 

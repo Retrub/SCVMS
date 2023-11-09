@@ -70,26 +70,26 @@ const ClientTable = () => {
     }
   };
 
-  const getStatusAndColor = (client) => {
+  const getAccessAndColor = (client) => {
     const validUntilDate = new Date(client.valid_until);
     const today = new Date();
     const remainingDays = Math.floor(
       (validUntilDate - today) / (1000 * 60 * 60 * 24)
     );
 
-    let statusClass = "";
-    let status = client.status;
+    let accessClass = "";
+    let access = client.access;
 
-    if (remainingDays < 0 || status === "Uždraustas") {
-      statusClass = "client-table__denied-status";
-      status = "Uždraustas";
+    if (remainingDays < 0 || access === "Uždrausta") {
+      accessClass = "client-table__denied-access";
+      access = "Uždrausta";
     } else if (remainingDays <= 5) {
-      statusClass = "client-table__warning-status";
-      status = "Patvirtintas";
+      accessClass = "client-table__warning-access";
+      access = "Patvirtinta";
     } else if (remainingDays > 5) {
-      statusClass = "client-table__confirmed-status";
+      accessClass = "client-table__confirmed-access";
     }
-    return { status, statusClass };
+    return { access, accessClass };
   };
 
   const recordEntry = async (clientId) => {
@@ -99,6 +99,7 @@ const ClientTable = () => {
       setTimeout(() => {
         setSuccess("");
       }, 3000);
+      fetchPrivateData();
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
@@ -114,6 +115,7 @@ const ClientTable = () => {
       setTimeout(() => {
         setSuccess("");
       }, 3000);
+      fetchPrivateData();
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
@@ -129,7 +131,10 @@ const ClientTable = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentEntries = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
+  const currentEntries = filteredClients.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   return (
     <div className="client-table">
@@ -157,13 +162,14 @@ const ClientTable = () => {
               <th>Gimimo data</th>
               <th>Prisijungimo data</th>
               <th>Galioja iki</th>
+              <th>Prieiga</th>
               <th>Statusas</th>
               <th>Veiksmai</th>
             </tr>
           </thead>
           <tbody>
             {currentEntries.map((client) => {
-              const { status, statusClass } = getStatusAndColor(client);
+              const { access, accessClass } = getAccessAndColor(client);
 
               return (
                 <tr key={client._id}>
@@ -174,24 +180,26 @@ const ClientTable = () => {
                   <td>{client.birth}</td>
                   <td>{client.join_date}</td>
                   <td>{client.valid_until}</td>
-                  <td className={statusClass}>{status}</td>
+                  <td className={accessClass}>{access}</td>
+                  <td>{client.status}</td>
                   <td>
                     <button
                       className="client-table__button-delete"
                       onClick={() => handleDelete(client._id)}
                     >
-                      Delete
+                      Ištrinti
                     </button>
 
                     <Link to={`/read/${client._id}`}>
                       <button className="client-table__button-update">
-                        Update
+                        Redaguoti
                       </button>
                     </Link>
 
                     <button
                       className="client-table__button-entryAndExit"
                       onClick={() => recordEntry(client._id)}
+                      disabled={client.access === "Uždrausta"}
                     >
                       Atėjo
                     </button>
@@ -199,6 +207,7 @@ const ClientTable = () => {
                     <button
                       className="client-table__button-entryAndExit"
                       onClick={() => recordExit(client._id)}
+                      disabled={client.access === "Uždrausta"}
                     >
                       Išėjo
                     </button>
@@ -212,28 +221,28 @@ const ClientTable = () => {
 
       <div className="client-table__legend">
         <div className="client-table__legend-item">
-          <div className="client-table__color-box client-table__confirmed-status"></div>
+          <div className="client-table__color-box client-table__confirmed-access"></div>
           <div>Leidimas suteiktas</div>
         </div>
 
         <div className="client-table__legend-item">
-          <div className="client-table__color-box client-table__denied-status"></div>
+          <div className="client-table__color-box client-table__denied-access"></div>
           <div>Pasibaigusi narystė ir priega uždrausta </div>
         </div>
 
         <div className="client-table__legend-item">
-          <div className="client-table__color-box client-table__warning-status"></div>
+          <div className="client-table__color-box client-table__warning-access"></div>
           <div>Baigiasi narystė, bet leidimas suteiktas</div>
         </div>
       </div>
 
       <div className="client-table__pagination">
-      <Pagination
-        itemsPerPage={itemsPerPage}
-        totalItems={filteredClients.length}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={filteredClients.length}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

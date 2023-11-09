@@ -1,0 +1,25 @@
+.clients-entries {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.clients-entries__title {
+  font-size: 25px;
+  font-weight: bolder;
+}
+
+.clients-entries__search {
+  padding: 10px;
+}
+
+.clients-entries__search input {
+  padding: 5px;
+  width: 230px;
+}
+
+.clients-entries__pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

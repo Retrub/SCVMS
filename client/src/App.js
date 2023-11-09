@@ -11,6 +11,7 @@ import NewClientPage from "./components/pages/NewClientPage";
 import UserPage from "./components/pages/UserPage";
 import ClientsPage from "./components/pages/ClientsPage";
 import UpdateClientPage from "./components/pages/UpdateClientPage";
+import ClientsEntriesPage from "./components/pages/ClientsEntriesPage";
 
 import "./App.css";
 
@@ -28,6 +29,7 @@ const App = () => {
           <PrivateRoute exact path="/new"  component={NewClientPage} />
           <PrivateRoute exact path="/clients"  component={ClientsPage} />
           <PrivateRoute path="/read/:clientId" component={UpdateClientPage} />
+          <PrivateRoute path="/entries" component={ClientsEntriesPage} />
         </Switch>
       </div>
     </Router>

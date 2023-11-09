@@ -14,6 +14,7 @@ const {
   updateClient,
   entryClient,
   exitClient,
+  readEntries,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -39,5 +40,7 @@ router.route("/client/update/:id").put(updateClient);
 router.route("/clients/entry/:id").post(entryClient);
 
 router.route("/clients/exit/:id").post(exitClient);
+
+router.route("/clients/entries").get(readEntries);
 
 module.exports = router;

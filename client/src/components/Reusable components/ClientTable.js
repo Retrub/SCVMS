@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./ClientTable.css";
+import Pagination from "./Pagination";
 
 const encryption = require("../../server/config/encryption");
 
@@ -13,6 +14,8 @@ const ClientTable = () => {
   const [success, setSuccess] = useState("");
   const [searchWord, setsearchWord] = useState("");
   const [filteredClients, setFilteredClients] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
@@ -34,6 +37,7 @@ const ClientTable = () => {
 
       setFilteredClients(filtered);
     };
+
     filterClients();
   }, [clientsData, searchWord]);
 
@@ -45,7 +49,7 @@ const ClientTable = () => {
       const decryptedData = encryption.decrypt(encryptedData, secretKey);
       setClientsData(decryptedData);
     } catch (error) {
-      console.error("Decryption error:", error);
+      console.error("Klaida nuskaitant privačią informaciją:", error);
     }
   };
 
@@ -118,6 +122,15 @@ const ClientTable = () => {
     }
   };
 
+  //Pagination
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentEntries = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div className="client-table">
       <div className="client-table__title">Klientų sąrašas</div>
@@ -149,7 +162,7 @@ const ClientTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => {
+            {currentEntries.map((client) => {
               const { status, statusClass } = getStatusAndColor(client);
 
               return (
@@ -212,6 +225,15 @@ const ClientTable = () => {
           <div className="client-table__color-box client-table__warning-status"></div>
           <div>Baigiasi narystė, bet leidimas suteiktas</div>
         </div>
+      </div>
+
+      <div className="client-table__pagination">
+      <Pagination
+        itemsPerPage={itemsPerPage}
+        totalItems={filteredClients.length}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
       </div>
     </div>
   );

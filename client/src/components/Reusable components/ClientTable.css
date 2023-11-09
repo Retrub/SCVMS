@@ -127,3 +127,9 @@ tr:hover {
   height: 20px;
   margin-right: 5px;
 }
+
+.client-table__pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

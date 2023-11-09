@@ -336,3 +336,47 @@ exports.exitClient = async (req, res) => {
     ErrorResponse.send(res, 500, error.message);
   }
 };
+
+// Clients entries and exits controller
+
+exports.readEntries = async (req, res) => {
+  try {
+    const entries = await ClientEntry.find();
+
+    const formattedClientsEntries = await Promise.all(
+      entries.map(async (entry) => {
+        const formattedEntry = entry.toObject();
+
+        if (entry.entryTime instanceof Date) {
+          formattedEntry.entryTime = entry.entryTime.toISOString().split(".")[0];
+        }
+
+        if (entry.exitTime instanceof Date) {
+          formattedEntry.exitTime = entry.exitTime.toISOString().split(".")[0];
+        }
+
+        const timeDifference = entry.exitTime - entry.entryTime;
+
+        const hoursDifference = timeDifference / (1000 * 60);
+
+        const spentTime = Math.round(hoursDifference);
+
+        const clientsId = formattedEntry.clientId;
+
+        const clientInfo = await Client.findOne({ _id: clientsId });
+
+        formattedEntry.clientInfo = clientInfo;
+        formattedEntry.spentTime = spentTime;
+
+        return formattedEntry;
+      })
+    );
+
+    const clientEntriesObjects = encryption.encrypt(formattedClientsEntries);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+
+    res.status(200).json({ clientEntriesObjects, EncryptedSecretKey });
+  } catch (error) {
+    ErrorResponse.send(res, 400, error.message);
+  }
+};

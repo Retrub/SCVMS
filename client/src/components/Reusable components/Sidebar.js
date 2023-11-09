@@ -19,6 +19,10 @@ const Sidebar = () => {
         </li>
 
         <li>
+          <Link to="/entries">Lankytojų įrašai</Link>
+        </li>
+
+        <li>
           <Link to="/login">Atsijungti</Link>
         </li>
       </ul>

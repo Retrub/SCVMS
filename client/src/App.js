@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./routing/PrivateRoute";
 //Pages
-import PrivatePage from "./components/pages/PrivatePage";
+import MainPage from "./components/pages/MainPage";
 import LoginPage from "./components/pages/LoginPage";
 import RegisterPage from "./components/pages/RegisterPage";
 import ForgotPasswordPage from "./components/pages/ForgotPasswordPage";
@@ -21,7 +21,7 @@ const App = () => {
       <div className="app">
         <Switch>
           <Route exact path="/user-content"  component={UserPage} />
-          <PrivateRoute  exact path="/main"component={PrivatePage}/>
+          <PrivateRoute exact path="/main" component={MainPage}/>
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register"  component={RegisterPage} />
           <Route exact path="/forgotpassword" component={ForgotPasswordPage} />

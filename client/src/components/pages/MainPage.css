@@ -1,22 +1,22 @@
-.private-page__title {
+.main-page__title {
   background: #333;
   color: #fff;
   padding: 20px;
   text-align: center;
 }
 
-.private-page__wrapper {
+.main-page__wrapper {
   display: flex;
 }
 
-.private-page__sidebar {
+.main-page__sidebar {
   display: flex;
   width: 250px;
   background: #333;
   color: #fff;
 }
 
-.private-page__main-content {
+.main-page__main-content {
   display: flex;
   flex-direction: column;
   align-items: center;

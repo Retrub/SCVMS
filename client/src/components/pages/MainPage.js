@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./PrivatePage.css";
+import "./MainPage.css";
 
 //Components
 import Sidebar from "../Reusable components/Sidebar";
 import Footer from "../Reusable components/Footer";
 import Header from "../Reusable components/Header";
+import Dashboard from "../Reusable components/Dashboard";
 
-const PrivatePage = ({ history }) => {
+const MainPage = ({ history }) => {
   const [error, setError] = useState("");
   const [privateData, setPrivateData] = useState("");
 
@@ -57,7 +58,9 @@ const PrivatePage = ({ history }) => {
         <Header />
         <div className="container">
           <Sidebar />
-          <div className="main">{privateData}</div>
+          <div className="main">
+            <Dashboard />
+          </div>
         </div>
         <Footer />
       </div>
@@ -65,4 +68,4 @@ const PrivatePage = ({ history }) => {
   );
 };
 
-export default PrivatePage;
+export default MainPage;

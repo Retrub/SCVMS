@@ -348,7 +348,9 @@ exports.readEntries = async (req, res) => {
         const formattedEntry = entry.toObject();
 
         if (entry.entryTime instanceof Date) {
-          formattedEntry.entryTime = entry.entryTime.toISOString().split(".")[0];
+          formattedEntry.entryTime = entry.entryTime
+            .toISOString()
+            .split(".")[0];
         }
 
         if (entry.exitTime instanceof Date) {
@@ -376,6 +378,56 @@ exports.readEntries = async (req, res) => {
     const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
 
     res.status(200).json({ clientEntriesObjects, EncryptedSecretKey });
+  } catch (error) {
+    ErrorResponse.send(res, 400, error.message);
+  }
+};
+
+exports.dashboardInfo = async (req, res) => {
+  try {
+    const entries = await ClientEntry.find();
+    const clients = await Client.find();
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Filter entries for today
+    const entriesToday = entries.filter((entry) => {
+      return (
+        new Date(entry.entryTime).toDateString() === currentDate.toDateString()
+      );
+    });
+
+    // Filter entries for the current month
+    const entriesThisMonth = entries.filter((entry) => {
+      const entryDate = new Date(entry.entryTime);
+      return (
+        entryDate.getMonth() === currentDate.getMonth() &&
+        entryDate.getFullYear() === currentDate.getFullYear()
+      );
+    });
+
+    const clientsThisMonth = clients.filter((client) => {
+      const clientDate = new Date(client.join_date);
+      return (
+        clientDate.getMonth() === currentDate.getMonth() &&
+        clientDate.getFullYear() === currentDate.getFullYear()
+      );
+    });
+
+    const entriesNow = entries.filter((entry) => {
+      return entry.exitTime === undefined;
+    });
+
+    const dashboardStats = {
+      visitorsToday: entriesToday.length,
+      visitorsMonth: entriesThisMonth.length,
+      clientsAmount: clients.length,
+      clientsAmountMonth: clientsThisMonth.length,
+      visitorsNow: entriesNow.length,
+    };
+
+    res.json({ dashboardStats });
   } catch (error) {
     ErrorResponse.send(res, 400, error.message);
   }

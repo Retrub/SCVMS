@@ -15,6 +15,7 @@ const {
   entryClient,
   exitClient,
   readEntries,
+  dashboardInfo,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -42,5 +43,7 @@ router.route("/clients/entry/:id").post(entryClient);
 router.route("/clients/exit/:id").post(exitClient);
 
 router.route("/clients/entries").get(readEntries);
+
+router.route("/main/dashboard").get(dashboardInfo);
 
 module.exports = router;

@@ -16,6 +16,7 @@ const {
   exitClient,
   readEntries,
   dashboardInfo,
+  readMemberships,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -45,5 +46,7 @@ router.route("/clients/exit/:id").post(exitClient);
 router.route("/clients/entries").get(readEntries);
 
 router.route("/main/dashboard").get(dashboardInfo);
+
+router.route("/memberships").get(readMemberships);
 
 module.exports = router;

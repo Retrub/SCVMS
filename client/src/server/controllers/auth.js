@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const User = require("../models/User");
 const Client = require("../models/Client");
 const ClientEntry = require("../models/ClientEntry");
+const Membership = require("../models/Membership");
+const MembershipEntry = require("../models/MembershipEntry");
 const sendEmail = require("../utilities/sendEmail");
 const jwt = require("jsonwebtoken");
 
@@ -198,6 +200,25 @@ exports.addClient = async (req, res) => {
     });
     await client.save();
 
+    const membershipId = await Membership.findOne({
+      duration_months: validityMonths,
+    });
+
+    const clientId = await Client.findOne({
+      email: email,
+    });
+
+    const offset = 2; // Lithuania is UTC+2
+    const localDate = new Date(currentDate.getTime() + offset * 60 * 60 * 1000);
+
+    const membershipEntry = await MembershipEntry.create({
+      user_id: clientId._id,
+      membership_id: membershipId._id,
+      membership_type: "Nauja narystė",
+      date: localDate,
+    });
+    await membershipEntry.save();
+
     res.status(200).json({ data: " Klientas sėkmingai sukurtas" });
   } catch (error) {
     if (error.code === 11000) {
@@ -271,6 +292,35 @@ exports.updateClient = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
+    const clientInfo = await Client.findById(id);
+
+    //Sukuriamas naujas įrašas, kadangi buvo pratestą narystė
+    if (updateData.valid_until) {
+      const updateValidUntil = new Date(updateData.valid_until);
+      const clientValidUntil = new Date(clientInfo.valid_until);
+
+      const timeDiff = updateValidUntil.getTime() - clientValidUntil.getTime();
+      const monthDiff = Math.round(timeDiff / (1000 * 3600 * 24 * 30));
+
+      const membershipId = await Membership.findOne({
+        duration_months: monthDiff,
+      });
+
+      const currentDate = new Date();
+      const offset = 2; // Lithuania is UTC+2
+      const localDate = new Date(
+        currentDate.getTime() + offset * 60 * 60 * 1000
+      );
+
+      const membershipEntry = await MembershipEntry.create({
+        user_id: id,
+        membership_id: membershipId._id,
+        membership_type: "Narystė pratestą",
+        date: localDate,
+      });
+      await membershipEntry.save();
+    }
+
     const client = await Client.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -334,7 +384,7 @@ exports.exitClient = async (req, res) => {
       await clientEntry.save();
 
       await Client.findByIdAndUpdate(id, { status: "Neaktyvus" });
-      
+
       res.status(200).json({ message: "Kliento išėjimas įrašytas" });
     } else {
       const message = "Aktyvaus kliento įrašo nerasta";
@@ -436,6 +486,17 @@ exports.dashboardInfo = async (req, res) => {
     };
 
     res.json({ dashboardStats });
+  } catch (error) {
+    ErrorResponse.send(res, 400, error.message);
+  }
+};
+
+//Plans controller
+
+exports.readMemberships = async (req, res) => {
+  try {
+    const memberships = await Membership.find();
+    res.status(200).json({ memberships });
   } catch (error) {
     ErrorResponse.send(res, 400, error.message);
   }

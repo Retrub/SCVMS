@@ -1,11 +1,13 @@
 import { Route } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import UserPage from "../components/pages/UserPage";
 
 const encryption = require("../server/config/encryption");
 
-const PrivateRoute = ({ history, component: Component, role, ...rest }) => {
+const PrivateRoute = ({ component: Component, role, ...rest }) => {
+  const history = useHistory();
   const [userRole, setUserRole] = useState("");
   const isAuthenticated = localStorage.getItem("authToken");
 

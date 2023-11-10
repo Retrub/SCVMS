@@ -21,6 +21,10 @@ const Sidebar = () => {
         <li>
           <Link to="/entries">Lankytojų įrašai</Link>
         </li>
+
+        <li>
+          <Link to="/memberships">Narystės</Link>
+        </li>
       </ul>
     </div>
   );

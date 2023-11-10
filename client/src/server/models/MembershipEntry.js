@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const membershipEntrySchema = new mongoose.Schema({
-  user_id: {
+  client_id: {
     type: String,
     required: true,
   },

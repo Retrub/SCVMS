@@ -23,7 +23,11 @@ const Sidebar = () => {
         </li>
 
         <li>
-          <Link to="/memberships">Narystės</Link>
+          <Link to="/memberships">Narysčių kainos</Link>
+        </li>
+
+        <li>
+          <Link to="/memberships-entries">Narysčių įrašai</Link>
         </li>
       </ul>
     </div>

@@ -17,6 +17,7 @@ const {
   readEntries,
   dashboardInfo,
   readMemberships,
+  readMembershipsEntries,
 } = require("../controllers/auth");
 
 router.route("/main").get(protect);
@@ -48,5 +49,7 @@ router.route("/clients/entries").get(readEntries);
 router.route("/main/dashboard").get(dashboardInfo);
 
 router.route("/memberships").get(readMemberships);
+
+router.route("/memberships/entries").get(readMembershipsEntries);
 
 module.exports = router;

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Membership.css";
 
+const encryption = require("../../server/config/encryption");
+
 const Membership = () => {
   const [membershipsData, setMembershipsData] = useState([]);
 
@@ -9,7 +11,10 @@ const Membership = () => {
     const fetchPrivateData = async () => {
       try {
         const response = await axios.get("/api/auth/memberships");
-        setMembershipsData(response.data.memberships);
+        const encryptedData = response.data.membershipsObjects;
+        const secretKey = response.data.EncryptedSecretKey;
+        const decryptedData = encryption.decrypt(encryptedData, secretKey);
+        setMembershipsData(decryptedData);
       } catch (error) {
         localStorage.removeItem("authToken");
       }

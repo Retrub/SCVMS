@@ -13,6 +13,7 @@ import ClientsPage from "./components/pages/ClientsPage";
 import UpdateClientPage from "./components/pages/UpdateClientPage";
 import ClientsEntriesPage from "./components/pages/ClientsEntriesPage";
 import MembershipsPage from "./components/pages/MembershipsPage";
+import MembershipsEntriesPage from "./components/pages/MembershipsEntriesPage";
 
 import "./App.css";
 
@@ -32,6 +33,7 @@ const App = () => {
           <PrivateRoute path="/read/:clientId" component={UpdateClientPage} />
           <PrivateRoute path="/entries" component={ClientsEntriesPage} />
           <PrivateRoute path="/memberships" component={MembershipsPage} />
+          <PrivateRoute path="/memberships-entries" component={MembershipsEntriesPage} />
         </Switch>
       </div>
     </Router>

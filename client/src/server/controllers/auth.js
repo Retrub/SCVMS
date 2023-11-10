@@ -212,7 +212,7 @@ exports.addClient = async (req, res) => {
     const localDate = new Date(currentDate.getTime() + offset * 60 * 60 * 1000);
 
     const membershipEntry = await MembershipEntry.create({
-      user_id: clientId._id,
+      client_id: clientId._id,
       membership_id: membershipId._id,
       membership_type: "Nauja narystė",
       date: localDate,
@@ -313,7 +313,7 @@ exports.updateClient = async (req, res) => {
       );
 
       const membershipEntry = await MembershipEntry.create({
-        user_id: id,
+        client_id: id,
         membership_id: membershipId._id,
         membership_type: "Narystė pratestą",
         date: localDate,
@@ -496,7 +496,48 @@ exports.dashboardInfo = async (req, res) => {
 exports.readMemberships = async (req, res) => {
   try {
     const memberships = await Membership.find();
-    res.status(200).json({ memberships });
+
+    const membershipsObjects = encryption.encrypt(memberships);
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+
+    res.status(200).json({ membershipsObjects, EncryptedSecretKey });
+  } catch (error) {
+    ErrorResponse.send(res, 400, error.message);
+  }
+};
+
+exports.readMembershipsEntries = async (req, res) => {
+  try {
+    const membershipsEntries = await MembershipEntry.find();
+
+    const formattedMembershipsEntries = await Promise.all(
+      membershipsEntries.map(async (entry) => {
+        const formattedEntry = entry.toObject();
+
+        if (entry.date instanceof Date) {
+          formattedEntry.date = entry.date.toISOString().split(".")[0];
+        }
+
+        const clientsId = formattedEntry.client_id;
+
+        const clientInfo = await Client.findOne({ _id: clientsId });
+
+        formattedEntry.clientInfo = clientInfo;
+
+        const membershipId = formattedEntry.membership_id;
+
+        const membershipInfo = await Membership.findOne({ _id: membershipId });
+
+        formattedEntry.membershipInfo = membershipInfo;
+
+        return formattedEntry;
+      })
+    );
+    const membershipEntriesObjects = encryption.encrypt(
+      formattedMembershipsEntries
+    );
+    const EncryptedSecretKey = process.env.SECRET_KEY_ENCRYPTION;
+    res.status(200).json({ membershipEntriesObjects, EncryptedSecretKey });
   } catch (error) {
     ErrorResponse.send(res, 400, error.message);
   }

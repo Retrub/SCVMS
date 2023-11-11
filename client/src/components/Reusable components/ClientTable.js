@@ -184,6 +184,7 @@ const ClientTable = () => {
                 Vardas{" "}
                 {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
               </th>
+
               <th
                 className="client-table__sort-th"
                 onClick={() => handleSort("surname")}
@@ -191,6 +192,7 @@ const ClientTable = () => {
                 Pavardė{" "}
                 {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
               </th>
+
               <th
                 className="client-table__sort-th"
                 onClick={() => handleSort("email")}
@@ -198,11 +200,21 @@ const ClientTable = () => {
                 El. paštas{" "}
                 {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
               </th>
+
               <th>Miestas</th>
               <th>Gimimo data</th>
               <th>Prisijungimo data</th>
-              <th>Galioja iki</th>
+
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("valid_until")}
+              >
+                Galioja iki{" "}
+                {sortField === "valid_until" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
+
               <th>Prieiga</th>
+
               <th
                 className="client-table__sort-th"
                 onClick={() => handleSort("status")}
@@ -210,6 +222,7 @@ const ClientTable = () => {
                 Statusas{" "}
                 {sortField === "status" && (sortOrder === "asc" ? "▲" : "▼")}
               </th>
+
               <th>Veiksmai</th>
             </tr>
           </thead>

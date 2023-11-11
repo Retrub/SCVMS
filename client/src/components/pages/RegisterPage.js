@@ -121,7 +121,7 @@ const RegisterPage = ({ history }) => {
         </button>
         <span className="register-page__subtext">
           Jau turite paskyrą?{" "}
-          <Link className="register-page__loginLink" to="/login">
+          <Link className="register-page__login-link" to="/login">
             Prisijungti
           </Link>
         </span>

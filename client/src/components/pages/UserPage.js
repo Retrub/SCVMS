@@ -5,8 +5,8 @@ const UserPage = () => {
   return (
     <div>
       <Header />
-      <h1>User Page</h1>
-      <p>This is the user-specific content.</p>
+      <h1>Kliento puslapis</h1>
+      <p> Šis puslapis būtų naudojamas pateikti informaciją klientams.</p>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const UpdateClientPage = () => {
       <div className="container">
         <Sidebar />
         <div className="main">
-          <UpdateClientForm/>
+          <UpdateClientForm />
         </div>
       </div>
       <Footer />

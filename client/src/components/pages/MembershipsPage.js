@@ -13,7 +13,7 @@ const NewClientPage = () => {
       <div className="container">
         <Sidebar />
         <div className="main">
-          <Membership/>
+          <Membership />
         </div>
       </div>
       <Footer />

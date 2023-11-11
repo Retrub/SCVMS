@@ -26,28 +26,28 @@ const Dashboard = ({ history }) => {
     <div className="dashboard">
       <div className="dashboard__title">Sporto klubo apžvalga</div>
       <div className="dashboard__circles-container">
-        <div class="dashboard__circle">
+        <div className="dashboard__circle">
           <div className="dashboard__circle-title">
             {dashboardInfo.visitorsToday}
           </div>
           <div className="dashboard__circle-subtitle">Šiandien apsilankė</div>
         </div>
 
-        <div class="dashboard__circle">
+        <div className="dashboard__circle">
           <div className="dashboard__circle-title">
             {dashboardInfo.visitorsMonth}
           </div>
           <div className="dashboard__circle-subtitle">Šį mėnesį apsilankė</div>
         </div>
 
-        <div class="dashboard__circle">
+        <div className="dashboard__circle">
           <div className="dashboard__circle-title">
             {dashboardInfo.clientsAmount}
           </div>
           <div className="dashboard__circle-subtitle">Klientų skaičius</div>
         </div>
 
-        <div class="dashboard__circle">
+        <div className="dashboard__circle">
           <div className="dashboard__circle-title">
             {dashboardInfo.clientsAmountMonth}
           </div>
@@ -56,7 +56,7 @@ const Dashboard = ({ history }) => {
           </div>
         </div>
 
-        <div class="dashboard__circle">
+        <div className="dashboard__circle">
           <div className="dashboard__circle-title">
             {dashboardInfo.visitorsNow}
           </div>

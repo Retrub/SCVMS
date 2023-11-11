@@ -4,7 +4,7 @@ import "./Dashboard.css";
 
 const Dashboard = ({ history }) => {
   const [dashboardInfo, setDashboardInfo] = useState([]);
-  const [videoId, setVideoId] = useState("yqrnhrkA7ik");
+  const videoId ="yqrnhrkA7ik";
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {

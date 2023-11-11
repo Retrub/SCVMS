@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./routing/PrivateRoute";
+
 //Pages
 import MainPage from "./components/pages/MainPage";
 import LoginPage from "./components/pages/LoginPage";
@@ -30,10 +31,10 @@ const App = () => {
           <Route exact path="/resetpassword/:resetToken" component={ResetPasswordPage}/>
           <PrivateRoute exact path="/new"  component={NewClientPage} />
           <PrivateRoute exact path="/clients"  component={ClientsPage} />
-          <PrivateRoute path="/read/:clientId" component={UpdateClientPage} />
-          <PrivateRoute path="/entries" component={ClientsEntriesPage} />
-          <PrivateRoute path="/memberships" component={MembershipsPage} />
-          <PrivateRoute path="/memberships-entries" component={MembershipsEntriesPage} />
+          <PrivateRoute exact path="/read/:clientId" component={UpdateClientPage} />
+          <PrivateRoute exact path="/entries" component={ClientsEntriesPage} />
+          <PrivateRoute exact path="/memberships" component={MembershipsPage} />
+          <PrivateRoute exact path="/memberships-entries" component={MembershipsEntriesPage} />
         </Switch>
       </div>
     </Router>

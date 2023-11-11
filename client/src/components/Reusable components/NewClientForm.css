@@ -22,8 +22,7 @@
 }
 
 .new-client-form input[type="text"],
-.new-client-form input[type="email"],
-.new-client-form input[type="tel"] {
+.new-client-form input[type="email"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;

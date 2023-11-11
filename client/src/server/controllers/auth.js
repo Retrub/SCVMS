@@ -446,17 +446,16 @@ exports.dashboardInfo = async (req, res) => {
     const entries = await ClientEntry.find();
     const clients = await Client.find();
 
-    // Get the current date
     const currentDate = new Date();
 
-    // Filter entries for today
+    // Išfiltruojami šios dienos įrašai
     const entriesToday = entries.filter((entry) => {
       return (
         new Date(entry.entryTime).toDateString() === currentDate.toDateString()
       );
     });
 
-    // Filter entries for the current month
+    // Išfiltruojami šio mėnesio įrašai
     const entriesThisMonth = entries.filter((entry) => {
       const entryDate = new Date(entry.entryTime);
       return (

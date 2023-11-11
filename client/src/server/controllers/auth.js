@@ -281,6 +281,8 @@ exports.deleteClient = async (req, res) => {
     const { id } = req.params;
 
     await Client.findByIdAndDelete(id);
+    await ClientEntry.deleteMany({clientId: id})
+    await MembershipEntry.deleteMany({client_id: id});
     res.status(200).json({ message: "Klientas sėkmingai ištrintas" });
   } catch (error) {
     ErrorResponse.send(res, 400, error.message);

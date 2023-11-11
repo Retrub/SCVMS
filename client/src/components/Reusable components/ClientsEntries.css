@@ -23,3 +23,7 @@
   justify-content: center;
   margin-top: 20px;
 }
+
+.clients-entries__sort-th {
+  cursor: pointer;
+}

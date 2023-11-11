@@ -12,6 +12,8 @@ const ClientsEntries = ({ history }) => {
   const [filteredClientsEntries, setFilteredClientsEntries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
@@ -36,8 +38,12 @@ const ClientsEntries = ({ history }) => {
     const filterClientsEntries = () => {
       const filtered = clientsEntriesData.filter((entry) => {
         return (
-          entry.clientInfo.name.toLowerCase().includes(searchWord.toLowerCase()) ||
-          entry.clientInfo.surname.toLowerCase().includes(searchWord.toLowerCase())
+          entry.clientInfo.name
+            .toLowerCase()
+            .includes(searchWord.toLowerCase()) ||
+          entry.clientInfo.surname
+            .toLowerCase()
+            .includes(searchWord.toLowerCase())
         );
       });
       setFilteredClientsEntries(filtered);
@@ -52,7 +58,34 @@ const ClientsEntries = ({ history }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentEntries = filteredClientsEntries.slice(indexOfFirstItem,indexOfLastItem);
+  const currentEntries = filteredClientsEntries.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const handleSort = (field) => {
+    const newSortOrder =
+      sortField === field ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    setSortOrder(newSortOrder);
+    setSortField(field);
+
+    const sortedClients = [...filteredClientsEntries].sort((a, b) => {
+      const valueA = a.clientInfo[field]
+        ? a.clientInfo[field].toLowerCase()
+        : "";
+      const valueB = b.clientInfo[field]
+        ? b.clientInfo[field].toLowerCase()
+        : "";
+
+      if (newSortOrder === "asc") {
+        return valueA.localeCompare(valueB);
+      } else {
+        return valueB.localeCompare(valueA);
+      }
+    });
+
+    setFilteredClientsEntries(sortedClients);
+  };
 
   return (
     <div className="clients-entries">
@@ -70,8 +103,19 @@ const ClientsEntries = ({ history }) => {
       <table>
         <thead>
           <tr>
-            <th>Vardas</th>
-            <th>Pavardė</th>
+            <th
+              className="clients-entries__sort-th"
+              onClick={() => handleSort("name")}
+            >
+              Vardas {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
+            <th
+              className="clients-entries__sort-th"
+              onClick={() => handleSort("surname")}
+            >
+              Pavardė{" "}
+              {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
             <th>Įėjimo laikas</th>
             <th>Išėjimo laikas</th>
             <th>Praleido (min)</th>
@@ -89,7 +133,7 @@ const ClientsEntries = ({ history }) => {
           ))}
         </tbody>
       </table>
-      
+
       <div className="clients-entries__pagination">
         <Pagination
           itemsPerPage={itemsPerPage}

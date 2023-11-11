@@ -16,6 +16,8 @@ const ClientTable = () => {
   const [filteredClients, setFilteredClients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
@@ -136,6 +138,26 @@ const ClientTable = () => {
     indexOfLastItem
   );
 
+  const handleSort = (field) => {
+    const newSortOrder =
+      sortField === field ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    setSortOrder(newSortOrder);
+    setSortField(field);
+
+    const sortedClients = [...filteredClients].sort((a, b) => {
+      const valueA = a[field].toLowerCase();
+      const valueB = b[field].toLowerCase();
+
+      if (newSortOrder === "asc") {
+        return valueA.localeCompare(valueB);
+      } else {
+        return valueB.localeCompare(valueA);
+      }
+    });
+
+    setFilteredClients(sortedClients);
+  };
+
   return (
     <div className="client-table">
       <div className="client-table__title">Klientų sąrašas</div>
@@ -155,15 +177,39 @@ const ClientTable = () => {
         <table>
           <thead>
             <tr>
-              <th>Vardas</th>
-              <th>Pavardė</th>
-              <th>El. paštas</th>
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("name")}
+              >
+                Vardas{" "}
+                {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("surname")}
+              >
+                Pavardė{" "}
+                {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("email")}
+              >
+                El. paštas{" "}
+                {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
               <th>Miestas</th>
               <th>Gimimo data</th>
               <th>Prisijungimo data</th>
               <th>Galioja iki</th>
               <th>Prieiga</th>
-              <th>Statusas</th>
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("status")}
+              >
+                Statusas{" "}
+                {sortField === "status" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
               <th>Veiksmai</th>
             </tr>
           </thead>

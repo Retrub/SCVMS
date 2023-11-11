@@ -18,3 +18,7 @@
 .membership-entries__subtitle-sum {
   color: #ff6600;
 }
+
+.membership-entries__sort-th {
+  cursor: pointer;
+}

@@ -7,9 +7,15 @@ const encryption = require("../../server/config/encryption");
 
 const MembershipEntries = () => {
   const [membershipsEntriesData, setMembershipsEntriesData] = useState([]);
+  const [filteredmembershipsEntries, setFilteredMembershipsEntries] = useState(
+    []
+  );
+  const [searchWord, setsearchWord] = useState("");
   const [totalSum, setTotalSum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     const fetchPrivateData = async () => {
@@ -45,16 +51,58 @@ const MembershipEntries = () => {
     fetchPrivateData();
   }, []);
 
+  useEffect(() => {
+    const filterMembershipsEntries = () => {
+      const filtered = membershipsEntriesData.filter((entry) => {
+        return (
+          entry.clientInfo.name
+            .toLowerCase()
+            .includes(searchWord.toLowerCase()) ||
+          entry.clientInfo.surname
+            .toLowerCase()
+            .includes(searchWord.toLowerCase())
+        );
+      });
+      setFilteredMembershipsEntries(filtered);
+    };
+
+    filterMembershipsEntries();
+  }, [membershipsEntriesData, searchWord]);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentEntries = membershipsEntriesData.slice(
+  const currentEntries = filteredmembershipsEntries.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
+
+  const handleSort = (field) => {
+    const newSortOrder =
+      sortField === field ? (sortOrder === "asc" ? "desc" : "asc") : "asc";
+    setSortOrder(newSortOrder);
+    setSortField(field);
+
+    const sortedClients = [...filteredmembershipsEntries].sort((a, b) => {
+      const valueA = a.clientInfo[field]
+        ? a.clientInfo[field].toLowerCase()
+        : "";
+      const valueB = b.clientInfo[field]
+        ? b.clientInfo[field].toLowerCase()
+        : "";
+
+      if (newSortOrder === "asc") {
+        return valueA.localeCompare(valueB);
+      } else {
+        return valueB.localeCompare(valueA);
+      }
+    });
+
+    setFilteredMembershipsEntries(sortedClients);
+  };
 
   return (
     <div className="membership-entries">
@@ -67,11 +115,31 @@ const MembershipEntries = () => {
         <span className="membership-entries__subtitle-sum">{totalSum}€</span>
       </div>
 
+      <div className="clients-entries__search">
+        <input
+          type="text"
+          placeholder="Ieškoti klientų pagal vardą || pavardę"
+          value={searchWord}
+          onChange={(e) => setsearchWord(e.target.value)}
+        />
+      </div>
+
       <table>
         <thead>
           <tr>
-            <th>Vardas</th>
-            <th>Pavardė</th>
+            <th
+              className="membership-entries__sort-th"
+              onClick={() => handleSort("name")}
+            >
+              Vardas {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
+            <th
+              className="membership-entries__sort-th"
+              onClick={() => handleSort("surname")}
+            >
+              Pavardė{" "}
+              {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
             <th>Trukmė (mėnesiais)</th>
             <th>Narystės tipas</th>
             <th>Įrašo data</th>

@@ -78,7 +78,7 @@ const LoginPage = ({ history }) => {
           className="btn btn-primary login-page__button"
           tabIndex={3}
         >
-          Login
+          Prisijungti
         </button>
 
         <span className="login-page__subtext">

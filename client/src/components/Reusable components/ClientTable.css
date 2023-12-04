@@ -15,7 +15,7 @@
 
 .client-table__search input {
   padding: 5px;
-  width: 300px;
+  width: 370px;
 }
 
 .client-table__container {
@@ -69,27 +69,6 @@
   cursor: pointer;
 }
 
-th {
-  background-color: #ff6600;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-
-tr:hover {
-  background-color: #e0e0e0;
-}
-
 .client-table__confirmed-access {
   color: white;
   background-color: green;
@@ -133,4 +112,51 @@ tr:hover {
 
 .client-table__sort-th {
   cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  td {
+    display: flex;
+    padding: 0;
+    font-size: 12px;
+    word-break: break-all;
+  }
+  th {
+    display: flex;
+    padding: 2px;
+    font-size: 14px;
+  }
+  .client-table__search input {
+    width: 200px;
+  }
+  .client-table {
+    align-items: flex-start;
+  }
+  .client-table__legend {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1000px) {
+  td {
+    padding: 0;
+    font-size: 14px;
+    word-break: break-all;
+  }
+  th {
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1605px) {
+  td {
+    padding: 0;
+    font-size: 14px;
+    word-break: break-all;
+  }
+  th {
+    padding: 6px;
+    font-size: 14px;
+  }
 }

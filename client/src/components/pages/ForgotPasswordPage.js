@@ -61,7 +61,7 @@ const ForgotPasswordPage = () => {
           type="submit"
           className="btn btn-primary forgotpassword-page__button"
         >
-          Siųsti laišką
+          Siųsti nuorodą
         </button>
       </form>
     </div>

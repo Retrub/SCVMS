@@ -1,5 +1,5 @@
 .sidebar {
-  background: #333;
+  background: #271c1c;
   color: rgb(240, 231, 231);
   padding: 20px;
   width: 250px;
@@ -12,7 +12,7 @@
 }
 
 .sidebar__menu li {
-  background-color: #ff6600;
+  background-color: #e9830c;
   padding: 5px;
   margin-bottom: 10px;
   border-radius: 10px;

@@ -37,14 +37,21 @@ const ClientsEntries = ({ history }) => {
   useEffect(() => {
     const filterClientsEntries = () => {
       const filtered = clientsEntriesData.filter((entry) => {
-        return (
-          entry.clientInfo.name
-            .toLowerCase()
-            .includes(searchWord.toLowerCase()) ||
-          entry.clientInfo.surname
-            .toLowerCase()
-            .includes(searchWord.toLowerCase())
-        );
+        const hasAllFields =
+          entry.clientInfo.name &&
+          entry.clientInfo.surname &&
+          entry.entryTime &&
+          entry.exitTime;
+        if (hasAllFields) {
+          return (
+            entry.clientInfo.name
+              .toLowerCase()
+              .includes(searchWord.toLowerCase()) ||
+            entry.clientInfo.surname
+              .toLowerCase()
+              .includes(searchWord.toLowerCase())
+          );
+        }
       });
       setFilteredClientsEntries(filtered);
     };
@@ -70,17 +77,30 @@ const ClientsEntries = ({ history }) => {
     setSortField(field);
 
     const sortedClients = [...filteredClientsEntries].sort((a, b) => {
-      const valueA = a.clientInfo[field]
-        ? a.clientInfo[field].toLowerCase()
-        : "";
-      const valueB = b.clientInfo[field]
-        ? b.clientInfo[field].toLowerCase()
-        : "";
+      const valueA = a.clientInfo[field] || a[field];
+      const valueB = b.clientInfo[field] || b[field];
+      console.log(valueA);
 
-      if (newSortOrder === "asc") {
-        return valueA.localeCompare(valueB);
+      const isDateFormat = (value) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/;
+        return dateRegex.test(value);
+      };
+
+      if (isDateFormat(valueA) && isDateFormat(valueB)) {
+        const dateA = new Date(valueA);
+        const dateB = new Date(valueB);
+
+        if (newSortOrder === "asc") {
+          return dateA - dateB;
+        } else {
+          return dateB - dateA;
+        }
       } else {
-        return valueB.localeCompare(valueA);
+        if (newSortOrder === "asc") {
+          return valueA.toString().localeCompare(valueB.toString());
+        } else {
+          return valueB.toString().localeCompare(valueA.toString());
+        }
       }
     });
 
@@ -109,6 +129,7 @@ const ClientsEntries = ({ history }) => {
             >
               Vardas {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
+
             <th
               className="clients-entries__sort-th"
               onClick={() => handleSort("surname")}
@@ -116,9 +137,30 @@ const ClientsEntries = ({ history }) => {
               Pavardė{" "}
               {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
-            <th>Įėjimo laikas</th>
-            <th>Išėjimo laikas</th>
-            <th>Praleido (min)</th>
+
+            <th
+              className="clients-entries__sort-th"
+              onClick={() => handleSort("entryTime")}
+            >
+              Įėjimo laikas{" "}
+              {sortField === "entryTime" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
+
+            <th
+              className="clients-entries__sort-th"
+              onClick={() => handleSort("exitTime")}
+            >
+              Išėjimo laikas{" "}
+              {sortField === "exitTime" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
+
+            <th
+              className="clients-entries__sort-th"
+              onClick={() => handleSort("spentTime")}
+            >
+              Praleido (min){" "}
+              {sortField === "spentTime" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
           </tr>
         </thead>
         <tbody>

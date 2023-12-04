@@ -43,7 +43,7 @@ const AddClientForm = () => {
     <div className="new-client-form">
       {error && <span className="error-message">{error}</span>}
       {success && <span className="success-message">{success}</span>}
-      <div className="new-client-form__title">Naujas klientas</div>
+      <div className="new-client-form__title">Naujas lankytojas</div>
       <form onSubmit={handleSubmit}>
         <div className="new-client-form__group">
           <label htmlFor="name">Vardas</label>

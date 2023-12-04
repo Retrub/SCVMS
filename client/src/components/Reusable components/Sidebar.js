@@ -11,15 +11,15 @@ const Sidebar = () => {
         </li>
 
         <li>
-          <Link to="/new">Naujas klientas</Link>
+          <Link to="/new">Lankytojo registracija</Link>
         </li>
 
         <li>
-          <Link to="/clients">Klientai</Link>
+          <Link to="/clients">Lankytojai</Link>
         </li>
 
         <li>
-          <Link to="/entries">Lankytojų įrašai</Link>
+          <Link to="/entries">Lankytojų lankomumas</Link>
         </li>
 
         <li>

@@ -19,6 +19,15 @@
   color: #ff6600;
 }
 
+.membership-entries__search {
+  padding: 10px;
+}
+
+.membership-entries__search input {
+  padding: 5px;
+  width: 280px;
+}
+
 .membership-entries__sort-th {
   cursor: pointer;
 }

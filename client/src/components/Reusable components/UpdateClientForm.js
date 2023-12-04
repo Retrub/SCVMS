@@ -59,8 +59,14 @@ const UpdateClientPage = () => {
     }
   };
 
-  const handleAddOneMonth = async () => {
-    const originalDate = new Date(clientData.valid_until);
+  const handleAddMonth = async () => {
+    let originalDate = new Date(clientData.valid_until);
+    const localDate = new Date();
+
+    if (localDate > originalDate) {
+      originalDate = localDate;
+    }
+
     const months = parseInt(monthsToAdd, 10);
     originalDate.setUTCMonth(originalDate.getUTCMonth() + months);
     const newValidUntil = originalDate.toISOString();
@@ -68,6 +74,7 @@ const UpdateClientPage = () => {
     const updatedFormData = {
       ...formData,
       valid_until: newValidUntil,
+      duration: months,
     };
 
     try {
@@ -183,7 +190,7 @@ const UpdateClientPage = () => {
         <button
           className="update-client-form__button"
           type="button"
-          onClick={handleAddOneMonth}
+          onClick={handleAddMonth}
         >
           + Pridėti
         </button>

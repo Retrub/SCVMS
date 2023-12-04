@@ -2,7 +2,7 @@ const CryptoJS = require("crypto-js");
 
 const encrypt = (obj) => {
   if (!process.env.SECRET_KEY_ENCRYPTION) {
-    throw new Error("SECRET_KEY_ENCRYPT environment variable is not set.");
+    throw new Error("SECRET_KEY_ENCRYPT kintamasis nenustatytas.");
   }
 
   const jsonString = JSON.stringify(obj);
@@ -16,7 +16,7 @@ const encrypt = (obj) => {
 
 const decrypt = (encryptedObj, SECRET_KEY) => {
   if (!SECRET_KEY) {
-    throw new Error("SECRET_KEY_DECRYPT environment variable is not set.");
+    throw new Error("SECRET_KEY_DECRYPT kintamasis nenustatytas.");
   }
 
   const bytes = CryptoJS.AES.decrypt(encryptedObj, SECRET_KEY);

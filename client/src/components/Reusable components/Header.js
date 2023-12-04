@@ -47,13 +47,18 @@ const Header = () => {
       <div className="header">
         <div className="header__title">ClubVisa</div>
         <div className="header__admin-info">Sveikas, {clientName.username}</div>
-        <a
-          onClick={logoutHandler}
-          href="/login"
-          className="header__logout-button"
-        >
-          Atsijungti
-        </a>
+        <div className="header__linksAndButtons">
+          <a href="" className="header__link">
+            Profilis
+          </a>
+          <a
+            onClick={logoutHandler}
+            href="/login"
+            className="header__logout-button"
+          >
+            Atsijungti
+          </a>
+        </div>
       </div>
     </header>
   );

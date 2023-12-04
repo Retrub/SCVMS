@@ -23,7 +23,7 @@ const App = () => {
     <Router>
       <div className="app">
         <Switch>
-          <Route exact path="/user-content"  component={UserPage} />
+          <PrivateRoute exact path="/user-content"  component={UserPage} />
           <PrivateRoute exact path="/main" component={MainPage}/>
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register"  component={RegisterPage} />

@@ -33,7 +33,8 @@ const ClientTable = () => {
         return (
           client.name.toLowerCase().includes(searchWord.toLowerCase()) ||
           client.email.toLowerCase().includes(searchWord.toLowerCase()) ||
-          client.surname.toLowerCase().includes(searchWord.toLowerCase())
+          client.surname.toLowerCase().includes(searchWord.toLowerCase()) ||
+          client.valid_until.includes(searchWord)
         );
       });
 
@@ -82,9 +83,12 @@ const ClientTable = () => {
     let accessClass = "";
     let access = client.access;
 
-    if (remainingDays < 0 || access === "Uždrausta") {
+    if (access === "Uždrausta") {
       accessClass = "client-table__denied-access";
       access = "Uždrausta";
+    } else if (remainingDays < 0) {
+      accessClass = "client-table__denied-access";
+      access = "Pasibaigusi narystė";
     } else if (remainingDays <= 5) {
       accessClass = "client-table__warning-access";
       access = "Patvirtinta";
@@ -160,12 +164,12 @@ const ClientTable = () => {
 
   return (
     <div className="client-table">
-      <div className="client-table__title">Klientų sąrašas</div>
+      <div className="client-table__title">Lankytojų sąrašas</div>
 
       <div className="client-table__search">
         <input
           type="text"
-          placeholder="Ieškoti klientų pagal vardą || pavardę || el. paštą"
+          placeholder="Ieškoti klientų pagal vardą || pavardę || el. paštą || galioja iki"
           value={searchWord}
           onChange={(e) => setsearchWord(e.target.value)}
         />
@@ -210,7 +214,8 @@ const ClientTable = () => {
                 onClick={() => handleSort("valid_until")}
               >
                 Galioja iki{" "}
-                {sortField === "valid_until" && (sortOrder === "asc" ? "▲" : "▼")}
+                {sortField === "valid_until" &&
+                  (sortOrder === "asc" ? "▲" : "▼")}
               </th>
 
               <th>Prieiga</th>
@@ -286,7 +291,7 @@ const ClientTable = () => {
 
         <div className="client-table__legend-item">
           <div className="client-table__color-box client-table__denied-access"></div>
-          <div>Pasibaigusi narystė ir priega uždrausta </div>
+          <div>Pasibaigusi narystė arba priega uždrausta </div>
         </div>
 
         <div className="client-table__legend-item">

@@ -60,7 +60,8 @@ const MembershipEntries = () => {
             .includes(searchWord.toLowerCase()) ||
           entry.clientInfo.surname
             .toLowerCase()
-            .includes(searchWord.toLowerCase())
+            .includes(searchWord.toLowerCase()) ||
+          entry.date.includes(searchWord)
         );
       });
       setFilteredMembershipsEntries(filtered);
@@ -87,17 +88,29 @@ const MembershipEntries = () => {
     setSortField(field);
 
     const sortedClients = [...filteredmembershipsEntries].sort((a, b) => {
-      const valueA = a.clientInfo[field]
-        ? a.clientInfo[field].toLowerCase()
-        : "";
-      const valueB = b.clientInfo[field]
-        ? b.clientInfo[field].toLowerCase()
-        : "";
+      const valueA = a.clientInfo[field] || a[field];
+      const valueB = b.clientInfo[field] || b[field];
 
-      if (newSortOrder === "asc") {
-        return valueA.localeCompare(valueB);
+      const isDateFormat = (value) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/;
+        return dateRegex.test(value);
+      };
+
+      if (isDateFormat(valueA) && isDateFormat(valueB)) {
+        const dateA = new Date(valueA);
+        const dateB = new Date(valueB);
+
+        if (newSortOrder === "asc") {
+          return dateA - dateB;
+        } else {
+          return dateB - dateA;
+        }
       } else {
-        return valueB.localeCompare(valueA);
+        if (newSortOrder === "asc") {
+          return valueA.toString().localeCompare(valueB.toString());
+        } else {
+          return valueB.toString().localeCompare(valueA.toString());
+        }
       }
     });
 
@@ -115,10 +128,10 @@ const MembershipEntries = () => {
         <span className="membership-entries__subtitle-sum">{totalSum}€</span>
       </div>
 
-      <div className="clients-entries__search">
+      <div className="membership-entries__search">
         <input
           type="text"
-          placeholder="Ieškoti klientų pagal vardą || pavardę"
+          placeholder="Ieškoti klientų pagal vardą || pavardę || datą"
           value={searchWord}
           onChange={(e) => setsearchWord(e.target.value)}
         />
@@ -133,6 +146,7 @@ const MembershipEntries = () => {
             >
               Vardas {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
+
             <th
               className="membership-entries__sort-th"
               onClick={() => handleSort("surname")}
@@ -140,9 +154,18 @@ const MembershipEntries = () => {
               Pavardė{" "}
               {sortField === "surname" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
+
             <th>Trukmė (mėnesiais)</th>
             <th>Narystės tipas</th>
-            <th>Įrašo data</th>
+
+            <th
+              className="membership-entries__sort-th"
+              onClick={() => handleSort("date")}
+            >
+              Įrašo data{" "}
+              {sortField === "date" && (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
+
             <th>Narystės kaina</th>
           </tr>
         </thead>

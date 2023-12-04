@@ -6,7 +6,7 @@ const Footer = () => {
     <div className="footer">
       <div className="footer_wrapper ">
         <div className="footer__content">
-          <p>&copy; Copyright 2023 ClubVisa</p>
+          <p>Copyright &copy; 2023 ClubVisa. Visos teisės saugomos</p>
         </div>
       </div>
     </div>

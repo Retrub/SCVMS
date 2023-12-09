@@ -161,7 +161,6 @@ const UpdateClientPage = () => {
             value={formData.access || clientData.access || ""}
             onChange={handleInputChange}
           >
-            <option value="">Pakeisti prieigą</option>
             <option value="Patvirtinta">Patvirtinta</option>
             <option value="Uždrausta">Uždrausta</option>
           </select>

@@ -17,12 +17,14 @@ import MembershipsPage from "./components/pages/MembershipsPage";
 import MembershipsEntriesPage from "./components/pages/MembershipsEntriesPage";
 
 import "./App.css";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const App = () => {
   return (
     <Router>
       <div className="app">
         <Switch>
+          <Route exact path="/"><Redirect to="/login"/></Route>
           <PrivateRoute exact path="/user-content"  component={UserPage} />
           <PrivateRoute exact path="/main" component={MainPage}/>
           <Route exact path="/login" component={LoginPage} />

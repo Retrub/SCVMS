@@ -205,9 +205,29 @@ const ClientTable = () => {
                 {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
               </th>
 
-              <th>Miestas</th>
-              <th>Gimimo data</th>
-              <th>Prisijungimo data</th>
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("city")}
+              >
+                Miestas{" "}
+                {sortField === "city" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
+
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("birth")}
+              >
+                Gimimo data{" "}
+                {sortField === "birth" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
+
+              <th
+                className="client-table__sort-th"
+                onClick={() => handleSort("join_date")}
+              >
+                Prisijungimo data{" "}
+                {sortField === "join_date" && (sortOrder === "asc" ? "▲" : "▼")}
+              </th>
 
               <th
                 className="client-table__sort-th"

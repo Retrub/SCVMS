@@ -156,7 +156,15 @@ const MembershipEntries = () => {
             </th>
 
             <th>Trukmė (mėnesiais)</th>
-            <th>Narystės tipas</th>
+
+            <th
+              className="membership-entries__sort-th"
+              onClick={() => handleSort("membership_type")}
+            >
+              Narystės tipas{" "}
+              {sortField === "membership_type" &&
+                (sortOrder === "asc" ? "▲" : "▼")}
+            </th>
 
             <th
               className="membership-entries__sort-th"

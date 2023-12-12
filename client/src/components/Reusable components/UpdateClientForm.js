@@ -182,7 +182,6 @@ const UpdateClientPage = () => {
             <option value="3">3 mėnesiai</option>
             <option value="6">6 mėnesiai</option>
             <option value="12">12 mėnesių</option>
-            <option value="-1">1 mėnesį atimti</option>
           </select>
         </div>
 
